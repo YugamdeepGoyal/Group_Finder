@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forgemate — Builders Directory</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FAF9F6;
+    --surface: #FFFFFF;
+    --text: #0F0F11;
+    --text-sec: #55555C;
+    --text-muted: #8E8E93;
+    --border: #E4E4E7;
+    --accent: #0038FF;
+    --accent-dim: rgba(0, 56, 255, 0.05);
+    --green: #14532D;
+    --green-dim: #E8F5E9;
+    --amber: #7C2D12;
+    --amber-dim: #FFF3E0;
+    --red: #7F1D1D;
+    --red-dim: #FFEBEE;
+    --radius: 8px;
+    --radius-sm: 4px;
+    --radius-lg: 12px;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; min-height:100vh; -webkit-font-smoothing:antialiased; }
+
+  /* ── NAVIGATION ── */
+  nav {
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    background:rgba(250,249,246,0.85); backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--border);
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0 32px; height:64px;
+  }
+  .nav-logo { display:flex; align-items:center; gap:12px; cursor:pointer; }
+  .nav-logo-icon {
+    width:28px; height:28px; background:var(--text); color:var(--surface);
+    border-radius:var(--radius); display:flex; align-items:center; justify-content:center;
+    font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; font-size:14px;
+  }
+  .nav-logo-text { font-family:'Plus Jakarta Sans',sans-serif; font-weight:700; font-size:16px; letter-spacing:-0.5px; }
+  .nav-links { display:flex; align-items:center; gap:8px; }
+  .nav-link {
+    padding:6px 16px; border-radius:var(--radius); font-size:13px; font-weight:500;
+    color:var(--text-sec); cursor:pointer; transition:all 0.1s; border:none; background:none;
+    font-family:'Plus Jakarta Sans',sans-serif;
+  }
+  .nav-link:hover, .nav-link.active { color:var(--text); background:var(--border); }
+  .nav-actions { display:flex; align-items:center; gap:12px; }
+  .nav-avatar {
+    width:32px; height:32px; border-radius:50%; background:var(--text); color:var(--surface);
+    display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600;
+    cursor:pointer; border:1px solid var(--border);
+  }
+
+  /* ── BUTTONS ── */
+  .btn {
+    display:inline-flex; align-items:center; gap:8px; padding:8px 16px;
+    border-radius:var(--radius); font-size:13px; font-weight:500; cursor:pointer;
+    transition:all 0.1s; border:none; font-family:'Plus Jakarta Sans',sans-serif;
+  }
+  .btn-primary { background:var(--text); color:var(--surface); }
+  .btn-primary:hover { background:var(--accent); }
+  .btn-secondary { background:var(--surface); color:var(--text); border:1px solid var(--border); }
+  .btn-secondary:hover { background:var(--bg); }
+  .btn-ghost { background:transparent; color:var(--text-sec); border:1px solid var(--border); }
+  .btn-ghost:hover { background:var(--surface); color:var(--text); }
+  .btn-sm { padding:6px 12px; font-size:12px; }
+  .btn-lg { padding:14px 28px; font-size:14px; }
+
+  /* ── PAGES ── */
+  .page { display:none; min-height:100vh; padding-top:64px; }
+  .page.active { display:block; }
+
+  /* ── LANDING HERO ── */
+  #page-landing { background:var(--bg); }
+  .hero-container {
+    max-width:1200px; margin:0 auto; padding:120px 32px 80px;
+    display:grid; grid-template-columns:1.2fr 0.8fr; gap:64px; align-items:center;
+  }
+  .hero-left { text-align:left; }
+  .hero-label { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--accent); letter-spacing:2px; text-transform:uppercase; margin-bottom:16px; }
+  .hero h1 { font-family:'Plus Jakarta Sans',sans-serif; font-size:clamp(48px,7vw,80px); font-weight:700; line-height:0.95; letter-spacing:-4px; color:var(--text); margin-bottom:32px; }
+  .hero h1 em { font-weight:300; font-style:normal; color:var(--text-sec); }
+  .hero-sub { font-size:18px; color:var(--text-sec); line-height:1.6; margin-bottom:40px; max-width:540px; }
+  .hero-ctas { display:flex; gap:16px; }
+
+  .hero-right {
+    border-left:1px solid var(--border); padding-left:64px;
+    display:flex; flex-direction:column; gap:48px;
+  }
+  .hero-stat { text-align:left; }
+  .hero-stat-num { font-family:'Plus Jakarta Sans',sans-serif; font-size:48px; font-weight:300; color:var(--text); line-height:1; letter-spacing:-2px; }
+  .hero-stat-label { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-top:8px; }
+
+  /* ── SECTIONS ── */
+  .section-container { max-width:1200px; margin:0 auto; padding:80px 32px; border-top:1px solid var(--border); }
+  .section-header { display:grid; grid-template-columns:1fr 1.5fr; gap:40px; margin-bottom:60px; }
+  .section-title h2 { font-family:'Plus Jakarta Sans',sans-serif; font-size:32px; font-weight:700; letter-spacing:-1.5px; }
+  .section-desc { font-size:16px; color:var(--text-sec); line-height:1.6; }
+
+  .steps-list { display:flex; flex-direction:column; border-top:1px solid var(--border); }
+  .step-row {
+    display:grid; grid-template-columns:120px 1.5fr 2fr; gap:24px; padding:32px 0;
+    border-bottom:1px solid var(--border); align-items:start;
+  }
+  .step-num { font-family:'JetBrains Mono',monospace; font-size:14px; color:var(--accent); font-weight:500; }
+  .step-title h3 { font-family:'Plus Jakarta Sans',sans-serif; font-size:18px; font-weight:600; letter-spacing:-0.5px; }
+  .step-body { font-size:14px; color:var(--text-sec); line-height:1.6; }
+
+  /* ── DIRECTORY LAYOUT ── */
+  .dir-layout {
+    max-width:1440px; margin:0 auto; display:grid; grid-template-columns:240px 1fr;
+    min-height:calc(100vh - 64px);
+  }
+  .dir-sidebar {
+    border-right:1px solid var(--border); padding:32px 24px;
+    position:sticky; top:64px; height:calc(100vh - 64px); overflow-y:auto;
+  }
+  .dir-main { padding:32px; }
+  .dir-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:32px; }
+  .dir-title h1 { font-family:'Plus Jakarta Sans',sans-serif; font-size:28px; font-weight:700; letter-spacing:-1px; }
+  .dir-title p { font-size:13px; color:var(--text-sec); margin-top:4px; }
+
+  /* SIDEBAR FILTER STYLING */
+  .filter-section { margin-bottom:32px; }
+  .filter-label { font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:12px; }
+  .filter-list { display:flex; flex-direction:column; gap:4px; }
+  .filter-item {
+    display:flex; align-items:center; gap:8px; padding:6px 10px; border-radius:var(--radius);
+    font-size:13px; color:var(--text-sec); cursor:pointer; transition:all 0.1s;
+  }
+  .filter-item:hover { background:var(--surface); color:var(--text); }
+  .filter-item.active { background:var(--accent-dim); color:var(--accent); font-weight:500; }
+  .filter-dot { width:6px; height:6px; border-radius:50%; }
+  .filter-count { margin-left:auto; font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--text-muted); }
+
+  /* SEARCH BOX */
+  .search-container {
+    display:flex; align-items:center; gap:8px; background:var(--surface);
+    border:1px solid var(--border); border-radius:var(--radius); padding:8px 12px; margin-bottom:24px;
+  }
+  .search-container input { border:none; outline:none; background:none; font-size:13px; color:var(--text); width:100%; font-family:'Inter',sans-serif; }
+  .search-container input::placeholder { color:var(--text-muted); }
+
+  /* DIR GRID (TABLE & DRAWER) */
+  .dir-split-container { display:grid; grid-template-columns:1fr 0fr; gap:0; transition:all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
+  .dir-split-container.drawer-open { grid-template-columns:1.1fr 0.9fr; gap:32px; }
+
+  /* TABLE DIRECTORY STYLING */
+  .table-wrapper { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; }
+  .directory-table { width:100%; border-collapse:collapse; text-align:left; font-size:13px; }
+  .directory-table th {
+    background:var(--bg); padding:12px 16px; font-family:'JetBrains Mono',monospace;
+    font-size:10px; text-transform:uppercase; letter-spacing:1px; color:var(--text-sec);
+    border-bottom:1px solid var(--border);
+  }
+  .directory-table td { padding:16px; border-bottom:1px solid var(--border); vertical-align:middle; }
+  .directory-row { cursor:pointer; transition:all 0.15s; }
+  .directory-row:hover { background:rgba(0, 0, 0, 0.015); }
+  .directory-row.selected { background:var(--accent-dim); }
+
+  .proj-info-cell { display:flex; align-items:center; gap:12px; }
+  .proj-icon-box {
+    width:32px; height:32px; border-radius:var(--radius); background:var(--bg);
+    display:flex; align-items:center; justify-content:center; color:var(--text); flex-shrink:0;
+    border:1px solid var(--border);
+  }
+  .proj-title-text { font-family:'Plus Jakarta Sans',sans-serif; font-weight:600; color:var(--text); font-size:14px; }
+  .proj-sub-text { font-size:11px; color:var(--text-muted); margin-top:2px; }
+
+  .spots-cell { font-family:'JetBrains Mono',monospace; font-size:12px; }
+  .spots-cell span { font-weight:600; color:var(--text); }
+
+  /* BADGES */
+  .badge {
+    display:inline-flex; align-items:center; padding:3px 8px; border-radius:var(--radius);
+    font-size:10px; font-weight:600; font-family:'JetBrains Mono',monospace; text-transform:uppercase;
+  }
+  .badge-open { background:var(--green-dim); color:var(--green); }
+  .badge-closing { background:var(--amber-dim); color:var(--amber); }
+  .badge-full { background:var(--red-dim); color:var(--red); }
+
+  .tag-mono {
+    display:inline-block; padding:2px 6px; border-radius:var(--radius-sm);
+    font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--text-sec);
+    background:var(--bg); border:1px solid var(--border); margin-right:4px; margin-bottom:4px;
+  }
+
+  /* AVATAR STACK */
+  .avatar-stack { display:flex; }
+  .avatar-item {
+    width:22px; height:22px; border-radius:50%; border:1.5px solid var(--surface);
+    margin-right:-6px; font-size:8px; font-weight:700; color:#fff;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  /* ── DETAILS STICKY DRAWER ── */
+  .detail-drawer {
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg);
+    padding:32px; position:sticky; top:96px; height:calc(100vh - 128px); overflow-y:auto;
+    display:none; flex-direction:column;
+  }
+  .detail-drawer.show { display:flex; }
+  .drawer-close {
+    align-self:flex-end; background:var(--bg); border:1px solid var(--border);
+    width:24px; height:24px; border-radius:var(--radius); display:flex; align-items:center;
+    justify-content:center; font-size:12px; cursor:pointer; color:var(--text-sec);
+  }
+  .drawer-close:hover { color:var(--text); background:var(--surface2); }
+
+  .drawer-meta-list { display:flex; flex-direction:column; gap:16px; margin:24px 0; border-top:1px solid var(--border); border-bottom:1px solid var(--border); padding:24px 0; }
+  .drawer-meta-item { display:flex; justify-content:space-between; font-size:13px; }
+  .drawer-meta-label { color:var(--text-muted); width:120px; font-family:'JetBrains Mono',monospace; font-size:11px; text-transform:uppercase; }
+  .drawer-meta-val { color:var(--text); font-weight:500; }
+
+  /* ── PROFILE PAGE ── */
+  .profile-container { max-width:1000px; margin:0 auto; padding:64px 32px; display:grid; grid-template-columns:320px 1fr; gap:64px; }
+  .profile-sidebar-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:32px; text-align:center; height:fit-content; }
+  .profile-avatar-large { width:80px; height:80px; border-radius:50%; background:var(--text); color:var(--surface); font-size:28px; font-weight:700; display:flex; align-items:center; justify-content:center; margin:0 auto 24px; }
+  .profile-meta-block { text-align:left; margin-top:24px; border-top:1px solid var(--border); padding-top:24px; display:flex; flex-direction:column; gap:12px; }
+  .profile-meta-row { display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text-sec); }
+
+  .profile-body { display:flex; flex-direction:column; gap:40px; }
+  .profile-block-title { font-family:'Plus Jakarta Sans',sans-serif; font-size:18px; font-weight:700; letter-spacing:-0.5px; border-bottom:1px solid var(--border); padding-bottom:12px; margin-bottom:16px; }
+
+  /* ── REQUESTS PAGE ── */
+  .req-container { max-width:960px; margin:0 auto; padding:64px 32px; }
+  .req-list { display:flex; flex-direction:column; gap:16px; margin-top:24px; }
+  .req-row {
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg);
+    padding:24px; display:grid; grid-template-columns:56px 1fr 180px; gap:20px; align-items:start;
+    transition:border-color 0.15s;
+  }
+  .req-row:hover { border-color:var(--border2); }
+  .req-avatar-circle { width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:14px; }
+  .req-body-content h4 { font-family:'Plus Jakarta Sans',sans-serif; font-size:15px; font-weight:600; display:flex; align-items:center; gap:8px; }
+  .req-message-text { font-size:13px; color:var(--text-sec); line-height:1.5; margin:10px 0; }
+  .req-actions-panel { display:flex; flex-direction:column; gap:8px; }
+
+  /* ── TOAST NOTIFICATION ── */
+  .toast {
+    position:fixed; bottom:32px; right:32px; background:var(--text); color:var(--surface);
+    border-radius:var(--radius); padding:12px 20px; font-size:13px; font-weight:500;
+    display:flex; align-items:center; gap:10px; z-index:300;
+    transform:translateY(100px); opacity:0; transition:all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .toast.show { transform:translateY(0); opacity:1; }
+
+  /* ── SKILL TAGS (SIDEBAR) ── */
+  .skill-tags { display:flex; flex-wrap:wrap; gap:6px; }
+  .skill-tag {
+    display:inline-block; padding:4px 8px; border-radius:var(--radius-sm);
+    font-size:11px; color:var(--text-sec); background:var(--surface);
+    border:1px solid var(--border); cursor:pointer; font-family:'JetBrains Mono',monospace;
+    transition:all 0.1s;
+  }
+  .skill-tag:hover { background:var(--bg); color:var(--text); }
+  .skill-tag.active { background:var(--accent); color:var(--surface); border-color:var(--accent); }
+
+  /* ── PROFILE STYLING ── */
+  .profile-name { font-family:'Plus Jakarta Sans',sans-serif; font-size:20px; font-weight:700; color:var(--text); margin-bottom:4px; letter-spacing:-0.5px; }
+  .profile-role { font-size:13px; color:var(--text-sec); font-weight:400; }
+  .availability-badge {
+    display:inline-flex; align-items:center; gap:6px; padding:4px 10px;
+    background:rgba(20,83,45,0.05); border:1px solid rgba(20, 83, 45, 0.15);
+    border-radius:var(--radius-sm); font-size:11px; font-weight:500; color:var(--green);
+    font-family:'JetBrains Mono',monospace;
+  }
+  .avail-dot {
+    width:6px; height:6px; border-radius:50%; background:var(--green);
+    display:inline-block; animation:pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0% { transform:scale(0.95); opacity:0.5; }
+    50% { transform:scale(1.1); opacity:1; }
+    100% { transform:scale(0.95); opacity:0.5; }
+  }
+
+  .skills-cloud { display:flex; flex-wrap:wrap; gap:6px; }
+  .skill-pill {
+    display:inline-flex; align-items:center; padding:4px 8px; border-radius:var(--radius-sm);
+    font-size:11px; font-weight:500; font-family:'JetBrains Mono',monospace;
+  }
+  .skill-pill.expert { background:var(--accent-dim); color:var(--accent); border:1px solid rgba(0, 56, 255, 0.15); }
+  .skill-pill.mid { background:var(--bg); color:var(--text-sec); border:1px solid var(--border); }
+  .skill-pill.beginner { background:var(--bg); color:var(--text-muted); border:1px dashed var(--border); }
+
+  .project-mini {
+    display:flex; align-items:center; gap:12px; padding:12px; background:var(--surface);
+    border:1px solid var(--border); border-radius:var(--radius); cursor:pointer; transition:all 0.1s;
+  }
+  .project-mini:hover { border-color:var(--text-muted); background:var(--bg); }
+  .project-mini-icon {
+    width:32px; height:32px; border-radius:var(--radius-sm); display:flex; align-items:center;
+    justify-content:center; font-size:14px; flex-shrink:0; border:1px solid var(--border);
+  }
+  .project-mini-title { font-family:'Plus Jakarta Sans',sans-serif; font-size:13px; font-weight:600; color:var(--text); }
+  .project-mini-role { font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--text-sec); margin-top:2px; }
+
+  /* ── EMPTY STATE & ICON SUBCLASSES ── */
+  .empty-state { text-align:center; padding:48px 24px; background:var(--surface); border:1px dashed var(--border); border-radius:var(--radius-lg); color:var(--text-sec); }
+  .empty-state-icon { font-size:24px; margin-bottom:12px; }
+
+  .proj-icon-box.v { background:var(--accent-dim); color:var(--accent); }
+  .proj-icon-box.c { background:var(--accent-dim); color:var(--accent); }
+  .proj-icon-box.g { background:var(--green-dim); color:var(--green); }
+  .proj-icon-box.a { background:var(--amber-dim); color:var(--amber); }
+
+  /* ── MOBILE RESPONSIVENESS ── */
+  @media(max-width:992px) {
+    .hero-container { grid-template-columns:1fr; gap:40px; padding:80px 24px; }
+    .hero-right { border-left:none; border-top:1px solid var(--border); padding-left:0; padding-top:40px; }
+    .dir-layout { grid-template-columns:1fr; }
+    .dir-sidebar { display:none; }
+    .dir-split-container.drawer-open { grid-template-columns:1fr; }
+    .detail-drawer { position:fixed; bottom:0; left:0; right:0; top:64px; height:auto; z-index:150; border-radius:0; border-top:1px solid var(--border); }
+    .profile-container { grid-template-columns:1fr; gap:40px; }
+    .req-row { grid-template-columns:1fr; }
+    .req-actions-panel { flex-direction:row; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav>
+  <div class="nav-logo" onclick="showPage('landing')">
+    <div class="nav-logo-icon">F</div>
+    <span class="nav-logo-text">FORGEMATE</span>
+  </div>
+  <div class="nav-links">
+    <button class="nav-link" onclick="showPage('dashboard')">Directory</button>
+    <button class="nav-link" onclick="showPage('profile')">Profile</button>
+    <button class="nav-link" id="nav-req-link" onclick="showPage('requests')">
+      Inbox <span style="font-family:'JetBrains Mono',monospace;font-size:10px;background:var(--accent);color:#fff;padding:2px 6px;border-radius:10px;margin-left:4px;">3</span>
+    </button>
+  </div>
+  <div class="nav-actions">
+    <button class="btn btn-primary btn-sm" onclick="showPage('dashboard')">Browse Directory →</button>
+    <div class="nav-avatar" onclick="showPage('profile')">AK</div>
+  </div>
+</nav>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span style="color:var(--accent);">✓</span>
+  <span id="toast-msg">Success</span>
+</div>
+
+<!-- ═══════════════════════════════════════════ LANDING PAGE ═══ -->
+<div id="page-landing" class="page active">
+  <div class="hero-container">
+    <div class="hero-left">
+      <div class="hero-label">HACKATHON TEAM MATCHING</div>
+      <h1>
+        Build software<br>
+        <em>that ships.</em>
+      </h1>
+      <p class="hero-sub">
+        Forgemate is a high-density builders registry. Match with engineers, designers, and domain leads without the boilerplate noise.
+      </p>
+      <div class="hero-ctas">
+        <button class="btn btn-primary btn-lg" onclick="showPage('dashboard')">Explore Directory →</button>
+        <button class="btn btn-secondary btn-lg" onclick="showPage('profile')">Create Builder Card</button>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-stat">
+        <div class="hero-stat-num">1.2k</div>
+        <div class="hero-stat-label">Active Project Vaults</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">8.9k</div>
+        <div class="hero-stat-label">Builders Verified</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">62%</div>
+        <div class="hero-stat-label">Project Match Rate</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-container">
+    <div class="section-header">
+      <div class="section-title">
+        <h2>Three Steps to Scaffolding</h2>
+      </div>
+      <div class="section-desc">
+        <p>No chat loops. No generic profiles. Just direct, structured matching matching project needs with builder stacks.</p>
+      </div>
+    </div>
+
+    <div class="steps-list">
+      <div class="step-row">
+        <div class="step-num">01 / Scaffolding</div>
+        <div class="step-title"><h3>Register Vault</h3></div>
+        <div class="step-body"><p>Define your code repositories, list stack credentials, and outline missing functional roles.</p></div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">02 / Telemetry</div>
+        <div class="step-title"><h3>Filter Registry</h3></div>
+        <div class="step-body"><p>Builders search directory lists matching exact developer experience, codebase access, and time constraints.</p></div>
+      </div>
+      <div class="step-row">
+        <div class="step-num">03 / Consensus</div>
+        <div class="step-title"><h3>Sync repositories</h3></div>
+        <div class="step-body"><p>Approve inbound requests, coordinate codebase access, and establish team branches instantly.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ DIRECTORY / DASHBOARD ═══ -->
+<div id="page-dashboard" class="page">
+  <div class="dir-layout">
+    <!-- SIDEBAR -->
+    <aside class="dir-sidebar">
+      <div class="search-container">
+        <input type="text" placeholder="Search directory…" oninput="filterRegistry(this.value)">
+      </div>
+
+      <div class="filter-section">
+        <div class="filter-label">Registry State</div>
+        <div class="filter-list">
+          <div class="filter-item active" onclick="filterStatus(this,'all')">
+            <span class="filter-dot" style="background:var(--accent);"></span>All Vaults
+            <span class="filter-count">24</span>
+          </div>
+          <div class="filter-item" onclick="filterStatus(this,'open')">
+            <span class="filter-dot" style="background:var(--green);"></span>Open Spots
+            <span class="filter-count">18</span>
+          </div>
+          <div class="filter-item" onclick="filterStatus(this,'closing')">
+            <span class="filter-dot" style="background:var(--amber);"></span>Closing
+            <span class="filter-count">4</span>
+          </div>
+          <div class="filter-item" onclick="filterStatus(this,'full')">
+            <span class="filter-dot" style="background:var(--red);"></span>Matched / Full
+            <span class="filter-count">2</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="filter-section">
+        <div class="filter-label">Hackathons</div>
+        <div class="filter-list">
+          <div class="filter-item" onclick="toggleSidebarFilter(this)">🌐 ETHGlobal Brussels</div>
+          <div class="filter-item" onclick="toggleSidebarFilter(this)">🎓 HackMIT 2026</div>
+          <div class="filter-item" onclick="toggleSidebarFilter(this)">🚀 Calhacks 12</div>
+          <div class="filter-item" onclick="toggleSidebarFilter(this)">🏗️ TreeHacks</div>
+        </div>
+      </div>
+
+      <div class="filter-section">
+        <div class="filter-label">Required Stacks</div>
+        <div class="skill-tags">
+          <div class="skill-tag active" onclick="toggleSkillFilter(this)">React</div>
+          <div class="skill-tag" onclick="toggleSkillFilter(this)">Solidity</div>
+          <div class="skill-tag" onclick="toggleSkillFilter(this)">Python</div>
+          <div class="skill-tag" onclick="toggleSkillFilter(this)">Rust</div>
+          <div class="skill-tag" onclick="toggleSkillFilter(this)">Figma</div>
+          <div class="skill-tag" onclick="toggleSkillFilter(this)">Node.js</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN DIRECTORY GRID -->
+    <main class="dir-main">
+      <div class="dir-header">
+        <div class="dir-title">
+          <h1>Registry Directory</h1>
+          <p><span id="results-count">18</span> projects matching active search parameters</p>
+        </div>
+        <button class="btn btn-primary" onclick="showToast('Project creation forms are currently locked.')">+ Post Project</button>
+      </div>
+
+      <div class="dir-split-container" id="split-container">
+        <!-- TABLE -->
+        <div class="table-wrapper">
+          <table class="directory-table">
+            <thead>
+              <tr>
+                <th>Project Details</th>
+                <th>Spots</th>
+                <th>Stack Required</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="directory-rows">
+              <!-- JS Injections -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- DETAILS STICKY PANEL -->
+        <div class="detail-drawer" id="detail-drawer">
+          <button class="drawer-close" onclick="closeDrawer()">✕</button>
+          
+          <div style="margin-top:20px;">
+            <div id="drawer-icon-box" class="proj-icon-box" style="width:48px;height:48px;font-size:24px;margin-bottom:16px;">🔗</div>
+            <h2 id="drawer-title" style="font-family:'Plus Jakarta Sans',sans-serif;font-size:22px;font-weight:700;letter-spacing:-0.5px;">Project Name</h2>
+            <p id="drawer-desc" style="font-size:14px;color:var(--text-sec);line-height:1.6;margin-top:12px;">Project description...</p>
+          </div>
+
+          <div class="drawer-meta-list">
+            <div class="drawer-meta-item">
+              <span class="drawer-meta-label">Registry</span>
+              <span class="drawer-meta-val" id="drawer-event">ETHGlobal Brussels</span>
+            </div>
+            <div class="drawer-meta-item">
+              <span class="drawer-meta-label">Team Size</span>
+              <span class="drawer-meta-val" id="drawer-size">3 / 5</span>
+            </div>
+            <div class="drawer-meta-item">
+              <span class="drawer-meta-label">Lead</span>
+              <span class="drawer-meta-val" id="drawer-lead" style="color:var(--accent);cursor:pointer;" onclick="showPage('profile')">Alex Kim</span>
+            </div>
+          </div>
+
+          <div style="margin-bottom:24px;">
+            <h4 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;text-transform:uppercase;color:var(--text-muted);letter-spacing:1px;margin-bottom:12px;">Open Roles</h4>
+            <div id="drawer-roles" style="display:flex;flex-direction:column;gap:8px;"></div>
+          </div>
+
+          <div style="margin-bottom:32px;">
+            <h4 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;text-transform:uppercase;color:var(--text-muted);letter-spacing:1px;margin-bottom:12px;">Current Roster</h4>
+            <div id="drawer-team" style="display:flex;flex-direction:column;gap:12px;"></div>
+          </div>
+
+          <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="submitApplication()">Request Team Sync</button>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ PROFILE PAGE ═══ -->
+<div id="page-profile" class="page">
+  <div class="profile-container">
+    <!-- SIDEBAR CARD -->
+    <aside class="profile-sidebar-card">
+      <div class="profile-avatar-large">AK</div>
+      <h2 class="profile-name">Alex Kim</h2>
+      <p class="profile-role">Full-Stack · Smart Contract Lead</p>
+      <div style="margin-top:12px;display:inline-flex;" class="availability-badge">
+        <span class="avail-dot"></span>Active Directory Card
+      </div>
+
+      <div class="profile-meta-block">
+        <div class="profile-meta-row">
+          <span>📍</span> San Francisco, CA
+        </div>
+        <div class="profile-meta-row">
+          <span>🐙</span> github.com/alexkim-dev
+        </div>
+        <div class="profile-meta-row">
+          <span>🌐</span> alexkim.dev
+        </div>
+      </div>
+    </aside>
+
+    <!-- PROFILE BODY -->
+    <main class="profile-body">
+      <div>
+        <h3 class="profile-block-title">Abstract</h3>
+        <p style="font-size:14px;color:var(--text-sec);line-height:1.7;">
+          CS @ Stanford '25. Focused on ZK credential verification, cross-chain state synchronization layers, and offline-first client replication protocols. finalising code repositories that ship under high constraint environments.
+        </p>
+      </div>
+
+      <div>
+        <h3 class="profile-block-title">Validated Stacks</h3>
+        <div class="skills-cloud">
+          <span class="skill-pill expert">Solidity</span>
+          <span class="skill-pill expert">React / Next.js</span>
+          <span class="skill-pill expert">TypeScript</span>
+          <span class="skill-pill mid">Rust</span>
+          <span class="skill-pill mid">Hardhat</span>
+          <span class="skill-pill mid">wagmi</span>
+          <span class="skill-pill beginner">ZK / Circom</span>
+          <span class="skill-pill beginner">PostgreSQL</span>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="profile-block-title">Roster History</h3>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div class="project-mini" onclick="showPage('dashboard')">
+            <div class="project-mini-icon" style="background:var(--accent-dim);color:var(--accent);">🔗</div>
+            <div>
+              <div class="project-mini-title" style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;">Aether Vaults — ETHGlobal Brussels 2025</div>
+              <div class="project-mini-role" style="font-size:11px;color:var(--text-muted);">Lead Architect · Finalist</div>
+            </div>
+          </div>
+          <div class="project-mini" onclick="showPage('dashboard')">
+            <div class="project-mini-icon" style="background:rgba(20,83,45,0.06);color:var(--green)">🌱</div>
+            <div>
+              <div class="project-mini-title" style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;">Sapling Protocol — TreeHacks 2025</div>
+              <div class="project-mini-role" style="font-size:11px;color:var(--text-muted);">Smart Contract Lead · Winner (Climate Track)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ INBOX / REQUESTS ═══ -->
+<div id="page-requests" class="page">
+  <div class="req-container">
+    <h2 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:28px;font-weight:700;letter-spacing:-1.5px;">Vault Sync Inbox</h2>
+    <p style="font-size:14px;color:var(--text-sec);margin-top:4px;">Coordinate inbound builder sync requests for: <strong style="color:var(--accent);">Aether Vaults</strong></p>
+
+    <div class="req-list" id="req-list">
+      <!-- Sync requests rendered by JS -->
+    </div>
+  </div>
+</div>
+
+<!-- ── JAVASCRIPT ── -->
+<script>
+// ── REGISTRY DATA ──
+const projects = [
+  { id:1, icon:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>`, iconClass:'v', color:'pc-primary', title:'Aether Vaults', desc:'Cross-chain yield coordinator that auto-rebalances vault assets across decentralized indexes.', tags:['Solidity','React','DeFi'], status:'open', statusLabel:'OPEN', event:'ETHGlobal Brussels', spots:2, teamColors:['#0038FF','#55555C','#14532D'], teamInitials:['AK','SR','KP'] },
+  { id:2, icon:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>`, iconClass:'c', color:'pc-cyan', title:'Telescope SDK', desc:'Distributed logging and execution tracing agent designed for light-weight SQLite database syncs.', tags:['Python','LLM','React'], status:'open', statusLabel:'OPEN', event:'HackMIT 2026', spots:3, teamColors:['#FF5500','#7C2D12'], teamInitials:['MR','JS'] },
+  { id:3, icon:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 3.5 1 8.5C18 17 14 20 11 20z"/><path d="M19 2c-2.26 2.33-5.7 5.07-8 8"/></svg>`, iconClass:'g', color:'pc-green', title:'Sapling Protocol', desc:'On-chain registry with satellite coverage telemetry verification for agricultural conservation.', tags:['Solidity','Python','IoT'], status:'closing', statusLabel:'CLOSING', event:'Climate Hack 2026', spots:1, teamColors:['#14532D','#0038FF','#55555C','#7C2D12'], teamInitials:['LP','AK','JS','KP'] },
+  { id:4, icon:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4M8 10v4M15 11h.01M18 13h.01"/></svg>`, iconClass:'a', color:'pc-primary', title:'PixelForge', desc:'Asymmetric digital canvas engine with provable creator attribution and lightweight sync layers.', tags:['Solidity','WebGL','React'], status:'open', statusLabel:'OPEN', event:'ETHGlobal Brussels', spots:2, teamColors:['#FF5500','#14532D'], teamInitials:['SA','LP'] },
+  { id:5, icon:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="14 3 14 8 20 8"/><path d="M12 11v6M9 14h6"/></svg>`, iconClass:'c', color:'pc-cyan', title:'Tessera Ledger', desc:'Privacy-preserving state record coordination using zero-knowledge verification frameworks.', tags:['ZK/Circom','Rust','React'], status:'open', statusLabel:'OPEN', event:'TreeHacks', spots:2, teamColors:['#7C2D12','#0038FF'], teamInitials:['JD','MR'] },
+  { id:6, icon:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>`, iconClass:'v', color:'pc-primary', title:'Stems Audio', desc:'Decentralized royalties indexing system for collaborative audio stems and modular track licensing.', tags:['Solidity','Node.js','Figma'], status:'full', statusLabel:'FULL', event:'Calhacks 12', spots:0, teamColors:['#55555C','#FF5500','#0038FF','#14532D','#7C2D12'], teamInitials:['TK','AR','BN','LP','SD'] },
+];
+
+const detailRoles = [
+  { name:'Frontend Lead / React Architect', dot:'#0038FF', count:'1 spot available' },
+  { name:'ML / Forecasting Systems Lead', dot:'#55555C', count:'1 spot available' },
+  { name:'Solidity Smart Contract Lead', dot:'#14532D', count:' Roster Matched (Alex Kim)' },
+];
+
+const detailTeam = [
+  { initials:'AK', bg:'#0038FF', name:'Alex Kim', role:'Team Lead · Full-stack ZK' },
+  { initials:'SA', bg:'#FF5500', name:'Sara Ahmed', role:'Solidity Developer' },
+  { initials:'KP', bg:'#14532D', name:'Kevin Patel', role:'Sub-system Indexing Eng' }
+];
+
+const syncRequests = [
+  { id:'req-1', initials:'MR', bg:'#0038FF', name:'Maya Rodriguez', role:'React Developer', message:'"Have built telemetry dashboards for Yearn vaults. Would love to own the state machine interface layout for Aether."', skills:['React','wagmi','TypeScript'], time:'⏱ 2 hours ago' },
+  { id:'req-2', initials:'JS', bg:'#FF5500', name:'James Sato', role:'ML Engineer', message:'"Doing MEV simulation forecasting at Stanford. I can build the asset rebalance signaling model in Python."', skills:['Python','PyTorch','SQL'], time:'⏱ 6 hours ago' },
+  { id:'req-3', initials:'LP', bg:'#14532D', name:'Lena Park', role:'Lead UX Designer', message:'"Designed multiple DeFi aggregator dashboards (acquired). Keen to compile high-end interface deck layouts."', skills:['Figma','UX Research'], time:'⏱ 1 day ago' },
+];
+
+let selectedProjectId = null;
+
+// ── RENDER DIRECTORY ──
+function renderTable(list) {
+  const tbody = document.getElementById('directory-rows');
+  tbody.innerHTML = list.map(p => `
+    <tr class="directory-row ${selectedProjectId === p.id ? 'selected' : ''}" onclick="selectProject(${p.id})">
+      <td>
+        <div class="proj-info-cell">
+          <div class="proj-icon-box ${p.iconClass}">${p.icon}</div>
+          <div>
+            <div class="proj-title-text">${p.title}</div>
+            <div class="proj-sub-text">${p.event}</div>
+          </div>
+        </div>
+      </td>
+      <td class="spots-cell">
+        <span>${p.spots}</span> spots open
+      </td>
+      <td>
+        <div style="max-width:280px;display:flex;flex-wrap:wrap;">
+          ${p.tags.map(t=>`<span class="tag-mono">${t}</span>`).join('')}
+        </div>
+      </td>
+      <td>
+        <span class="badge badge-${p.status}">${p.statusLabel}</span>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function selectProject(id) {
+  selectedProjectId = id;
+  const p = projects.find(x => x.id === id);
+  if (!p) return;
+
+  // Highlight row
+  document.querySelectorAll('.directory-row').forEach(row => row.classList.remove('selected'));
+  renderTable(projects);
+
+  // Set Drawer Content
+  document.getElementById('drawer-icon-box').innerHTML = p.icon;
+  document.getElementById('drawer-icon-box').className = `proj-icon-box ${p.iconClass}`;
+  document.getElementById('drawer-title').textContent = p.title;
+  document.getElementById('drawer-desc').textContent = p.desc;
+  document.getElementById('drawer-event').textContent = p.event;
+  document.getElementById('drawer-size').textContent = `${5 - p.spots} / 5`;
+  
+  document.getElementById('drawer-roles').innerHTML = detailRoles.map(r=>`
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:10px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span class="filter-dot" style="background:${r.dot};"></span>
+        <span style="font-size:12px;font-weight:500;">${r.name}</span>
+      </div>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-sec);">${r.count}</span>
+    </div>
+  `).join('');
+
+  document.getElementById('drawer-team').innerHTML = detailTeam.map(t=>`
+    <div style="display:flex;align-items:center;gap:12px;padding:8px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);">
+      <div class="avatar-item" style="background:${t.bg};margin-right:0;width:28px;height:28px;font-size:10px;">${t.initials}</div>
+      <div>
+        <div style="font-size:12px;font-weight:600;">${t.name}</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-sec);margin-top:2px;">${t.role}</div>
+      </div>
+    </div>
+  `).join('');
+
+  // Expand layout
+  document.getElementById('split-container').classList.add('drawer-open');
+  document.getElementById('detail-drawer').classList.add('show');
+}
+
+function closeDrawer() {
+  selectedProjectId = null;
+  document.getElementById('split-container').classList.remove('drawer-open');
+  document.getElementById('detail-drawer').classList.remove('show');
+  renderTable(projects);
+}
+
+// ── ROUTER ──
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  window.scrollTo(0, 0);
+
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  const linkId = id === 'dashboard' ? 'Directory' : id === 'profile' ? 'Profile' : 'Inbox';
+  document.querySelectorAll('.nav-link').forEach(l => {
+    if (l.textContent.includes(linkId)) l.classList.add('active');
+  });
+
+  if(id === 'dashboard') {
+    closeDrawer();
+  }
+}
+
+// ── FILTERS ──
+let currentSearch = '';
+let currentStatus = 'all';
+
+function filterRegistry(q) {
+  currentSearch = q.toLowerCase();
+  applyFilters();
+}
+
+function filterStatus(el, status) {
+  // Clear active from siblings inside the same list
+  el.closest('.filter-list').querySelectorAll('.filter-item').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  currentStatus = status;
+  applyFilters();
+}
+
+function toggleSidebarFilter(el) {
+  el.classList.toggle('active');
+  applyFilters();
+}
+
+function toggleSkillFilter(el) {
+  el.classList.toggle('active');
+  applyFilters();
+}
+
+function applyFilters() {
+  let filtered = projects;
+
+  // 1. Registry state status filter
+  if (currentStatus !== 'all') {
+    filtered = filtered.filter(p => p.status === currentStatus);
+  }
+
+  // 2. Search filter
+  if (currentSearch) {
+    filtered = filtered.filter(p => 
+      p.title.toLowerCase().includes(currentSearch) || 
+      p.desc.toLowerCase().includes(currentSearch) ||
+      p.tags.some(t => t.toLowerCase().includes(currentSearch))
+    );
+  }
+
+  // 3. Hackathons sidebar filter
+  const activeHackathonEls = Array.from(document.querySelectorAll('.dir-sidebar .filter-section:nth-of-type(2) .filter-item.active'));
+  if (activeHackathonEls.length > 0) {
+    const activeHackathons = activeHackathonEls.map(el => {
+      // strip non-alphanumeric chars and trim to match event names
+      return el.textContent.replace(/[^\w\s\d]/g, '').trim().toLowerCase();
+    });
+    filtered = filtered.filter(p => {
+      const pEventClean = p.event.toLowerCase();
+      return activeHackathons.some(h => pEventClean.includes(h) || h.includes(pEventClean));
+    });
+  }
+
+  // 4. Required stack sidebar tags filter
+  const activeSkillEls = Array.from(document.querySelectorAll('.skill-tag.active'));
+  if (activeSkillEls.length > 0) {
+    const activeSkills = activeSkillEls.map(el => el.textContent.trim().toLowerCase());
+    filtered = filtered.filter(p => {
+      const pTags = p.tags.map(t => t.toLowerCase());
+      return activeSkills.every(s => pTags.some(t => t.includes(s) || s.includes(t)));
+    });
+  }
+
+  renderTable(filtered);
+  document.getElementById('results-count').textContent = filtered.length;
+}
+
+// ── INBOX ACTIONS ──
+function renderRequests() {
+  const container = document.getElementById('req-list');
+  if(syncRequests.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">📥</div>
+        <p>No active synchronization requests found.</p>
+      </div>
+    `;
+    return;
+  }
+  container.innerHTML = syncRequests.map(r => `
+    <div class="req-row" id="row-${r.id}">
+      <div class="req-avatar-circle" style="background:${r.bg}">${r.initials}</div>
+      <div class="req-body-content">
+        <h4>${r.name} <span class="tag-mono" style="font-size:9px;background:var(--accent-dim);color:var(--accent);border:none;padding:2px 6px;">${r.role}</span></h4>
+        <p class="req-message-text">${r.message}</p>
+        <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px;">
+          ${r.skills.map(s=>`<span class="tag-mono" style="font-size:9px;">${s}</span>`).join('')}
+        </div>
+        <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-muted);">${r.time}</span>
+      </div>
+      <div class="req-actions-panel">
+        <button class="btn btn-primary btn-sm" onclick="syncAction('${r.id}', 'accept', '${r.name}')">Accept Sync</button>
+        <button class="btn btn-ghost btn-sm" onclick="syncAction('${r.id}', 'decline', '${r.name}')">Decline</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function syncAction(id, action, name) {
+  const row = document.getElementById('row-' + id);
+  if(row) {
+    row.style.opacity = '0';
+    row.style.transform = 'translateY(10px)';
+    row.style.transition = 'all 0.2s';
+    setTimeout(() => {
+      const idx = syncRequests.findIndex(x => x.id === id);
+      if(idx > -1) syncRequests.splice(idx, 1);
+      renderRequests();
+    }, 200);
+  }
+  showToast(action === 'accept' ? `Consensus approved for ${name}. Codebase branches synced.` : `Sync request from ${name} declined.`);
+}
+
+function submitApplication() {
+  showToast("Sync request transmitted to lead.");
+}
+
+// ── TOAST ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ── INITIALIZE ──
+renderTable(projects);
+renderRequests();
+</script>
+</body>
+</html>

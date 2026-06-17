@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forgemate — Where builders connect</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..800;1,9..144,300..800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FAF9F5;
+    --surface: #FFFFFF;
+    --surface2: #F4F2EB;
+    --surface3: #E7E4DC;
+    --border: #E7E4DC;
+    --border2: #C7C4B9;
+    --primary: #C2410C;
+    --primary-soft: #EA580C;
+    --primary-dim: #FFF7ED;
+    --secondary: #0F172A;
+    --secondary-soft: #334155;
+    --secondary-dim: #F1F5F9;
+    --green: #14532D;
+    --amber: #7C2D12;
+    --red: #7F1D1D;
+    --text: #141414;
+    --text2: #3E3E3E;
+    --text3: #6E6E6E;
+    --text4: #9E9E9E;
+    --radius: 8px;
+    --radius-sm: 4px;
+    --radius-lg: 12px;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; min-height:100vh; overflow-x:hidden; -webkit-font-smoothing:antialiased; }
+
+  /* ── NAV ── */
+  nav {
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    background:rgba(250,249,245,0.85); backdrop-filter:blur(20px);
+    border-bottom:1px solid var(--border);
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0 24px; height:60px;
+  }
+  .nav-logo { display:flex; align-items:center; gap:8px; cursor:pointer; }
+  .nav-logo-icon {
+    width:32px; height:32px; background:var(--primary); color:#FFF;
+    border-radius:4px; display:flex; align-items:center; justify-content:center;
+    font-family:'Fraunces',serif; font-weight:700; font-size:16px;
+  }
+  .nav-logo-text { font-family:'Fraunces',serif; font-weight:700; font-size:18px; letter-spacing:-0.5px; }
+  .nav-links { display:flex; align-items:center; gap:4px; }
+  .nav-link {
+    padding:6px 14px; border-radius:var(--radius-sm); font-size:14px; font-weight:500;
+    color:var(--text3); cursor:pointer; transition:all 0.15s; border:none; background:none;
+  }
+  .nav-link:hover, .nav-link.active { color:var(--text); background:var(--surface2); }
+  .nav-actions { display:flex; align-items:center; gap:8px; }
+  .nav-avatar {
+    width:32px; height:32px; border-radius:50%; background:var(--surface2); color:var(--text2);
+    display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600;
+    cursor:pointer; border:1px solid var(--border2);
+  }
+
+  /* ── BUTTONS ── */
+  .btn {
+    display:inline-flex; align-items:center; gap:6px; padding:8px 16px;
+    border-radius:var(--radius-sm); font-size:14px; font-weight:500; cursor:pointer;
+    transition:all 0.15s; border:none; font-family:'Inter',sans-serif;
+  }
+  .btn-primary {
+    background: var(--primary);
+    color: #fff;
+    border: 1px solid var(--primary-soft);
+  }
+  .btn-primary:hover {
+    background: var(--primary-soft);
+    transform: translateY(-1px);
+  }
+  .btn-secondary { background:var(--surface2); color:var(--text); border:1px solid var(--border2); }
+  .btn-secondary:hover { background:var(--surface3); }
+  .btn-ghost { background:transparent; color:var(--text2); border:1px solid var(--border); }
+  .btn-ghost:hover { background:var(--surface2); color:var(--text); }
+  .btn-sm { padding:5px 12px; font-size:13px; }
+  .btn-lg { padding:12px 24px; font-size:15px; border-radius:var(--radius); }
+  .btn-cyan {
+    background: var(--secondary);
+    color: #fff;
+  }
+  .btn-cyan:hover {
+    background: var(--secondary-soft);
+    transform: translateY(-1px);
+  }
+
+  /* ── PAGES ── */
+  .page { display:none; min-height:100vh; padding-top:60px; }
+  .page.active { display:block; }
+
+  /* ── LANDING ── */
+  #page-landing { padding-top:0; overflow:hidden; }
+
+  .hero {
+    min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding:80px 24px 60px; position:relative;
+    background-image: 
+      radial-gradient(at 50% 0%, rgba(194, 65, 12, 0.03) 0px, transparent 60%),
+      linear-gradient(rgba(194, 65, 12, 0.012) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(194, 65, 12, 0.012) 1px, transparent 1px);
+    background-size: 100% 100%, 40px 40px, 40px 40px;
+    background-position: center;
+  }
+  .hero-content { position:relative; z-index:1; max-width:720px; }
+  .hero-badge {
+    display:inline-flex; align-items:center; gap:6px; padding:4px 12px 4px 8px;
+    background:var(--primary-dim); border:1px solid rgba(194, 65, 12, 0.15); border-radius:20px;
+    font-size:12px; font-weight:500; color:var(--primary); margin-bottom:28px;
+    font-family:'JetBrains Mono',monospace;
+  }
+  .badge-dot { width:6px; height:6px; border-radius:50%; background:var(--primary-soft); animation:pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+  .hero h1 {
+    font-family:'Fraunces',serif; font-size:clamp(40px,6vw,72px); font-weight:400;
+    line-height:1.05; letter-spacing:-2px; margin-bottom:20px;
+  }
+  .hero h1 em { font-family:'Fraunces',serif; font-style:italic; font-weight:300; }
+  .hero h1 .accent-p { color:var(--primary); }
+  .hero h1 .accent-c { color:var(--secondary); }
+  .hero-sub { font-size:18px; color:var(--text2); line-height:1.6; margin-bottom:36px; max-width:520px; margin-left:auto; margin-right:auto; }
+  .hero-ctas { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+  .hero-stats { display:flex; gap:40px; justify-content:center; margin-top:60px; flex-wrap:wrap; }
+  .hero-stat { text-align:center; }
+  .hero-stat-num { font-family:'Fraunces',serif; font-size:28px; font-weight:600; color:var(--text); }
+  .hero-stat-label { font-size:12px; color:var(--text3); margin-top:2px; }
+
+  .section { padding:80px 24px; max-width:1100px; margin:0 auto; }
+  .section-label { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--primary); letter-spacing:2px; text-transform:uppercase; margin-bottom:12px; }
+  .section-title { font-family:'Fraunces',serif; font-size:clamp(28px,3.5vw,40px); font-weight:400; letter-spacing:-1px; margin-bottom:16px; }
+  .section-sub { font-size:16px; color:var(--text2); line-height:1.6; max-width:520px; }
+
+  .features-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:24px; margin-top:48px; }
+  .feature-card {
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg);
+    padding:28px; transition:all 0.2s;
+  }
+  .feature-card:hover { border-color:var(--border2); transform:translateY(-1px); box-shadow:0 8px 24px rgba(0,0,0,0.04); }
+  .feature-icon {
+    width:40px; height:40px; border-radius:4px; display:flex; align-items:center; justify-content:center;
+    margin-bottom:16px; color:var(--text2);
+  }
+  .feature-icon.v { background:var(--primary-dim); color:var(--primary); }
+  .feature-icon.c { background:var(--secondary-dim); color:var(--secondary); }
+  .feature-icon.g { background:rgba(20,83,45,0.06); color:var(--green); }
+  .feature-card h3 { font-family:'Fraunces',serif; font-size:18px; font-weight:600; margin-bottom:8px; }
+  .feature-card p { font-size:14px; color:var(--text2); line-height:1.6; }
+
+  .cta-banner {
+    margin:0 24px 80px; background:var(--surface);
+    border:1px solid var(--border); border-radius:var(--radius-lg); padding:60px 40px; text-align:center;
+  }
+  .cta-banner h2 { font-family:'Fraunces',serif; font-size:clamp(24px,3vw,36px); font-weight:400; letter-spacing:-1px; margin-bottom:12px; }
+  .cta-banner p { color:var(--text2); margin-bottom:28px; }
+
+  /* ── DASHBOARD ── */
+  .page-header { padding:32px 24px 0; max-width:1200px; margin:0 auto; }
+  .page-header h1 { font-family:'Fraunces',serif; font-size:28px; font-weight:600; letter-spacing:-0.5px; }
+  .page-header p { color:var(--text3); font-size:14px; margin-top:4px; }
+
+  .dash-layout { display:grid; grid-template-columns:260px 1fr; gap:0; max-width:1200px; margin:0 auto; min-height:calc(100vh - 60px); }
+  .sidebar {
+    border-right:1px solid var(--border); padding:24px 20px; position:sticky; top:60px;
+    height:calc(100vh - 60px); overflow-y:auto;
+  }
+  .sidebar-section { margin-bottom:28px; }
+  .sidebar-section-label { font-size:11px; font-weight:600; color:var(--text3); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:12px; }
+
+  .filter-group { display:flex; flex-direction:column; gap:2px; }
+  .filter-chip {
+    display:flex; align-items:center; gap:8px; padding:7px 10px; border-radius:var(--radius-sm);
+    font-size:13px; color:var(--text2); cursor:pointer; transition:all 0.1s;
+  }
+  .filter-chip:hover { background:var(--surface2); }
+  .filter-chip.active { background:var(--primary-dim); color:var(--primary); font-weight:500; }
+  .filter-chip-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+  .filter-count { margin-left:auto; font-size:11px; color:var(--text3); font-family:'JetBrains Mono',monospace; }
+
+  .skill-tags { display:flex; flex-wrap:wrap; gap:6px; }
+  .skill-tag {
+    padding:3px 10px; border-radius:20px; font-size:11px; font-weight:500; cursor:pointer;
+    font-family:'JetBrains Mono',monospace; transition:all 0.1s;
+    background:var(--surface2); color:var(--text2); border:1px solid var(--border);
+  }
+  .skill-tag:hover, .skill-tag.active { background:var(--primary-dim); color:var(--primary); border-color:var(--primary-soft); }
+
+  .search-box {
+    display:flex; align-items:center; gap:8px; background:var(--surface); border:1px solid var(--border);
+    border-radius:var(--radius-sm); padding:8px 12px; margin-bottom:16px; transition:border-color 0.2s;
+  }
+  .search-box:focus-within { border-color:var(--primary); }
+  .search-box input { background:none; border:none; outline:none; color:var(--text); font-size:13px; flex:1; font-family:'Inter',sans-serif; }
+  .search-box input::placeholder { color:var(--text4); }
+
+  .main-content { padding:24px; }
+  .content-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:12px; }
+  .content-tabs { display:flex; gap:4px; }
+  .tab {
+    padding:6px 14px; border-radius:var(--radius-sm); font-size:13px; font-weight:500;
+    color:var(--text3); cursor:pointer; transition:all 0.2s; border:none; background:none;
+  }
+  .tab.active { background:var(--surface2); color:var(--text); }
+  .results-label { font-size:13px; color:var(--text2); }
+  .results-label span { color:var(--text); font-weight:600; }
+
+  .projects-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:16px; }
+  .project-card {
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg);
+    padding:22px; cursor:pointer; transition:all 0.2s; position:relative; overflow:hidden;
+  }
+  .project-card::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:3px;
+    opacity:0; transition:opacity 0.2s;
+  }
+  .project-card:hover { border-color:var(--border2); transform:translateY(-1px); box-shadow:0 8px 24px rgba(0,0,0,0.03); }
+  .project-card:hover::before { opacity:1; }
+  .pc-primary::before { background:var(--primary); }
+  .pc-cyan::before { background:var(--secondary); }
+  .pc-green::before { background:var(--green); }
+
+  .card-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:12px; }
+  .card-icon { width:40px; height:40px; border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+  .card-icon.v { background:var(--primary-dim); color:var(--primary); }
+  .card-icon.c { background:var(--secondary-dim); color:var(--secondary); }
+  .card-icon.g { background:rgba(20,83,45,0.06); color:var(--green); }
+  .card-icon.a { background:rgba(124,45,18,0.06); color:var(--amber); }
+  .status-badge { padding:3px 8px; border-radius:4px; font-size:10px; font-weight:600; font-family:'JetBrains Mono',monospace; }
+  .status-open { background:rgba(20,83,45,0.06); color:var(--green); }
+  .status-full { background:rgba(127,29,29,0.06); color:var(--red); }
+  .status-closing { background:rgba(124,45,18,0.06); color:var(--amber); }
+  .card-title { font-family:'Fraunces',serif; font-size:18px; font-weight:600; margin-bottom:6px; line-height:1.3; }
+  .card-desc { font-size:13px; color:var(--text2); line-height:1.5; margin-bottom:14px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+  .card-tags { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:14px; }
+  .tag { padding:2px 8px; border-radius:4px; font-size:10px; font-family:'JetBrains Mono',monospace; font-weight:500; }
+  .tag-primary { background:var(--primary-dim); color:var(--primary); }
+  .tag-secondary { background:var(--secondary-dim); color:var(--secondary); }
+  .tag-g { background:rgba(20,83,45,0.06); color:var(--green); }
+  .tag-n { background:var(--surface2); color:var(--text3); }
+  .card-footer { display:flex; align-items:center; justify-content:space-between; }
+  .card-team { display:flex; align-items:center; gap:8px; }
+  .avat    width:24px; height:24px; border-radius:50%; border:2px solid var(--surface);
+    margin-right:-6px; font-size:9px; font-weight:700; display:flex; align-items:center; justify-content:center;
+  }
+  .card-spots { font-size:12px; color:var(--text2); }
+  .card-spots span { color:var(--green); font-weight:600; }
+  .card-event { font-size:11px; color:var(--text3); font-family:'JetBrains Mono',monospace; }
+
+  /* ── PROJECT DETAIL ── */
+  .detail-layout { max-width:1100px; margin:0 auto; padding:32px 24px; display:grid; grid-template-columns:1fr 320px; gap:32px; }
+  .detail-main {}
+  .detail-sidebar {}
+
+  .breadcrumb { display:flex; align-items:center; gap:6px; font-size:13px; color:var(--text3); margin-bottom:24px; }
+  .breadcrumb span { cursor:pointer; } .breadcrumb span:hover { color:var(--primary); }
+  .breadcrumb-sep { color:var(--text4); }
+
+  .detail-hero { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:32px; margin-bottom:20px; }
+  .detail-icon { width:56px; height:56px; border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:26px; margin-bottom:16px; }
+  .detail-title { font-family:'Fraunces',serif; font-size:28px; font-weight:600; letter-spacing:-0.5px; margin-bottom:8px; }
+  .detail-event { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--primary); margin-bottom:16px; }
+  .detail-desc { font-size:15px; color:var(--text2); line-height:1.7; }
+
+  .detail-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:24px; margin-bottom:16px; }
+  .detail-card-title { font-family:'Fraunces',serif; font-size:16px; font-weight:600; margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+  .detail-card-title span { font-size:16px; }
+
+  .role-list { display:flex; flex-direction:column; gap:10px; }
+  .role-item { display:flex; align-items:center; justify-content:space-between; padding:10px 14px; background:var(--surface2); border-radius:var(--radius-sm); }
+  .role-info { display:flex; align-items:center; gap:10px; }
+  .role-dot { width:8px; height:8px; border-radius:50%; }
+  .role-name { font-size:14px; font-weight:500; }
+  .role-count { font-size:12px; color:var(--text2); font-family:'JetBrains Mono',monospace; }
+
+  .team-list { display:flex; flex-direction:column; gap:10px; }
+  .team-member { display:flex; align-items:center; gap:12px; padding:10px; border-radius:var(--radius-sm); cursor:pointer; transition:background 0.1s; }
+  .team-member:hover { background:var(--surface2); }
+  .member-avatar { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; flex-shrink:0; }
+  .member-info {}
+  .member-name { font-size:13px; font-weight:500; }
+  .member-role { font-size:11px; color:var(--text3); font-family:'JetBrains Mono',monospace; }
+  .member-lead-badge { margin-left:auto; padding:2px 6px; background:var(--primary-dim); color:var(--primary); border-radius:4px; font-size:10px; font-weight:600; }
+
+  .sidebar-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:24px; margin-bottom:16px; }
+  .sidebar-card-title { font-size:12px; font-weight:600; color:var(--text3); text-transform:uppercase; letter-spacing:1px; margin-bottom:16px; }
+  .meta-item { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; font-size:13px; }
+  .meta-label { color:var(--text3); }
+  .meta-value { color:var(--text); font-weight:500; }
+  .meta-value.green { color:var(--green); }
+
+  .join-card { background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius-lg); padding:24px; }
+  .join-card h3 { font-family:'Fraunces',serif; font-size:18px; font-weight:600; margin-bottom:8px; }
+  .join-card p { font-size:13px; color:var(--text2); margin-bottom:16px; line-height:1.5; }
+  .join-card .btn { width:100%; justify-content:center; margin-bottom:8px; }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:200;
+    align-items:center; justify-content:center; padding:20px; backdrop-filter:blur(4px);
+  }
+  .modal-overlay.open { display:flex; }
+  .modal { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:32px; width:100%; max-width:480px; position:relative; }
+  .modal-close { position:absolute; top:16px; right:16px; background:var(--surface2); border:none; color:var(--text3); width:28px; height:28px; border-radius:50%; cursor:pointer; font-size:16px; display:flex; align-items:center; justify-content:center; }
+  .modal-close:hover { color:var(--text); background:var(--surface3); }
+  .modal h2 { font-family:'Fraunces',serif; font-size:22px; font-weight:600; margin-bottom:6px; }
+  .modal-sub { font-size:13px; color:var(--text3); margin-bottom:24px; }
+  .form-group { margin-bottom:16px; }
+  .form-label { font-size:12px; font-weight:600; color:var(--text3); margin-bottom:6px; display:block; text-transform:uppercase; letter-spacing:0.5px; }
+  .form-input, .form-select, .form-textarea {
+    width:100%; background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius-sm);
+    color:var(--text); font-size:14px; padding:9px 12px; outline:none; font-family:'Inter',sans-serif; transition:border-color 0.2s;
+  }
+  .form-input:focus, .form-select:focus, .form-textarea:focus { border-color:var(--primary); }
+  .form-textarea { resize:vertical; min-height:90px; }
+  .form-select { appearance:none; cursor:pointer; }
+  .form-actions { display:flex; gap:8px; margin-top:20px; }
+  .form-actions .btn { flex:1; justify-content:center; }
+
+  .success-state { text-align:center; padding:20px 0; }
+  .success-icon { font-size:48px; margin-bottom:12px; }
+  .success-state h3 { font-family:'Fraunces',serif; font-size:20px; font-weight:600; margin-bottom:8px; }
+  .success-state p { font-size:14px; color:var(--text3); }
+
+  /* ── PROFILE ── */
+  .profile-layout { max-width:1000px; margin:0 auto; padding:32px 24px; display:grid; grid-template-columns:300px 1fr; gap:28px; }
+  .profile-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:28px; text-align:center; height:fit-content; }
+  .profile-avatar { width:88px; height:88px; border-radius:50%; margin:0 auto 16px; display:flex; align-items:center; justify-content:center; font-size:32px; font-weight:700; border:1px solid var(--border2); }
+  .profile-name { font-family:'Fraunces',serif; font-size:24px; font-weight:600; margin-bottom:4px; }
+  .profile-role { font-size:14px; color:var(--primary); font-weight:500; margin-bottom:8px; }
+  .profile-location { font-size:13px; color:var(--text3); margin-bottom:16px; }
+  .profile-bio { font-size:13px; color:var(--text2); line-height:1.6; text-align:left; margin-bottom:20px; }
+  .profile-links { display:flex; flex-direction:column; gap:8px; margin-bottom:20px; }
+  .profile-link { display:flex; align-items:center; gap:8px; padding:8px 12px; background:var(--surface2); border-radius:var(--radius-sm); font-size:13px; color:var(--text2); cursor:pointer; text-decoration:none; transition:background 0.1s; }
+  .profile-link:hover { background:var(--surface3); }
+  .profile-link-icon { width:20px; height:20px; display:flex; align-items:center; justify-content:center; }
+  .availability-badge { display:flex; align-items:center; gap:6px; justify-content:center; padding:6px 12px; background:rgba(20,83,45,0.06); border-radius:20px; font-size:12px; color:var(--green); font-weight:500; }
+  .avail-dot { width:6px; height:6px; border-radius:50%; background:var(--green); animation:pulse 2s infinite; }
+
+  .profile-main { display:flex; flex-direction:column; gap:20px; }
+  .profile-section { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:24px; }
+  .profile-section-title { font-family:'Fraunces',serif; font-size:18px; font-weight:600; margin-bottom:16px; }
+  .skills-cloud { display:flex; flex-wrap:wrap; gap:8px; }
+  .skill-pill { padding:5px 12px; border-radius:20px; font-size:12px; font-weight:500; font-family:'JetBrains Mono',monospace; }
+  .skill-pill.expert { background:var(--primary-dim); color:var(--primary); border:1px solid var(--primary-soft); }
+  .skill-pill.mid { background:var(--secondary-dim); color:var(--secondary); border:1px solid var(--border2); }
+  .skill-pill.beginner { background:var(--surface2); color:var(--text3); border:1px solid var(--border); }
+  .skill-level-legend { display:flex; gap:16px; margin-top:12px; font-size:11px; color:var(--text3); }
+  .legend-item { display:flex; align-items:center; gap:5px; }
+  .legend-dot { width:6px; height:6px; border-radius:50%; }
+
+  .projects-mini { display:flex; flex-direction:column; gap:10px; }
+  .project-mini { display:flex; align-items:center; gap:12px; padding:12px; background:var(--surface2); border-radius:var(--radius-sm); cursor:pointer; transition:background 0.15s; }
+  .project-mini:hover { background:var(--surface3); }
+  .project-mini-icon { width:36px; height:36px; border-radius:4px; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+  .project-mini-title { font-size:14px; font-weight:500; }
+  .project-mini-role { font-size:11px; color:var(--text3); font-family:'JetBrains Mono',monospace; }
+
+  /* ── JOIN REQUESTS ── */
+  .requests-layout { max-width:1000px; margin:0 auto; padding:32px 24px; }
+  .requests-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; }
+  .requests-header h1 { font-family:'Fraunces',serif; font-size:24px; font-weight:600; }
+  .requests-tabs { display:flex; gap:4px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm); padding:4px; }
+  .req-tab { padding:6px 14px; border-radius:6px; font-size:13px; font-weight:500; color:var(--text3); cursor:pointer; transition:all 0.1s; }
+  .req-tab.active { background:var(--surface2); color:var(--text); }
+  .req-card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:20px; margin-bottom:12px; display:flex; align-items:flex-start; gap:16px; transition:border-color 0.2s; }
+  .req-card:hover { border-color:var(--border2); }
+  .req-avatar { width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:17px; font-weight:700; flex-shrink:0; }
+  .req-info { flex:1; min-width:0; }
+  .req-name-row { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:4px; }
+  .req-name { font-size:15px; font-weight:600; }
+  .req-role { font-size:11px; font-family:'JetBrains Mono',monospace; padding:2px 7px; border-radius:4px; }
+  .req-message { font-size:13px; color:var(--text2); line-height:1.5; margin-bottom:10px; }
+  .req-skills { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:10px; }
+  .req-meta { font-size:11px; color:var(--text3); display:flex; gap:12px; }
+  .req-actions { display:flex; flex-direction:column; gap:6px; flex-shrink:0; }
+  .req-link { color:var(--primary); font-size:12px; cursor:pointer; text-decoration:none; }
+  .req-link:hover { color:var(--primary-soft); }
+
+  .empty-state { text-align:center; padding:60px 20px; color:var(--text3); }
+  .empty-state-icon { font-size:48px; margin-bottom:12px; opacity:0.5; }
+  .empty-state p { font-size:14px; }
+
+  /* ── MOBILE ── */
+  @media(max-width:768px) {
+    .dash-layout { grid-template-columns:1fr; }
+    .sidebar { display:none; }
+    .detail-layout { grid-template-columns:1fr; }
+    .profile-layout { grid-template-columns:1fr; }
+    .nav-links { display:none; }
+    .hero h1 { font-size:36px; letter-spacing:-1px; }
+    .hero-stats { gap:24px; }
+  }
+
+  /* ── NOTIFICATION TOAST ── */
+  .toast {
+    position:fixed; bottom:24px; right:24px; background:var(--surface); border:1px solid var(--border2);
+    border-radius:var(--radius); padding:14px 18px; display:flex; align-items:center; gap:10px;
+    font-size:14px; box-shadow:0 4px 16px rgba(0,0,0,0.05); z-index:300;
+    transform:translateY(100px); opacity:0; transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .toast.show { transform:translateY(0); opacity:1; }
+  .toast-icon { font-size:18px; }
+
+  /* ── DIVIDER ── */
+  .divider { border:none; border-top:1px solid var(--border); margin:0; }
+
+  /* ── GLOW ── */
+  .glow-v { box-shadow:0 0 40px rgba(194, 65, 12, 0.05); }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width:6px; }
+  ::-webkit-scrollbar-track { background:transparent; }
+  ::-webkit-scrollbar-thumb { background:var(--border2); border-radius:3px; }
+
+  /* number counter for requests */
+  .notif-dot {
+    width:16px; height:16px; background:var(--red); border-radius:50%;
+    font-size:9px; font-weight:700; display:inline-flex; align-items:center; justify-content:center;
+    margin-left:4px; vertical-align:top; margin-top:1px; color:#fff;
+  }
+
+  .page-header-row { display:flex; align-items:center; justify-content:space-between; max-width:1200px; margin:0 auto; padding:32px 24px 0; }
+  .page-header-row h1 { font-family:'Fraunces',serif; font-size:28px; font-weight:600; letter-spacing:-0.5px; }
+
+  /* ── AVATAR STACK ── */
+  .avatar-stack { display:flex; }
+  .avatar-sm {
+    width:22px; height:22px; border-radius:50%; border:1.5px solid var(--surface);
+    margin-right:-6px; font-size:8px; font-weight:700; color:#fff;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  /* ── DETAIL ICON COLORS ── */
+  .detail-icon.v { background:var(--primary-dim); color:var(--primary); }
+  .detail-icon.c { background:var(--secondary-dim); color:var(--secondary); }
+  .detail-icon.g { background:rgba(20,83,45,0.06); color:var(--green); }
+  .detail-icon.a { background:rgba(124,45,18,0.06); color:var(--amber); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo" onclick="showPage('landing')">
+    <div class="nav-logo-icon">F</div>
+    <span class="nav-logo-text">Forgemate</span>
+  </div>
+  <div class="nav-links">
+    <button class="nav-link" onclick="showPage('dashboard')">Explore</button>
+    <button class="nav-link" onclick="showPage('profile')">My Profile</button>
+    <button class="nav-link" onclick="showPage('requests')">
+      Requests <span class="notif-dot">3</span>
+    </button>
+  </div>
+  <div class="nav-actions">
+    <button class="btn btn-primary btn-sm" onclick="showPage('dashboard')">Find Team →</button>
+    <div class="nav-avatar" onclick="showPage('profile')">AK</div>
+  </div>
+</nav>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-icon">✓</span>
+  <span id="toast-msg">Action completed</span>
+</div>
+
+<!-- ═══════════════════════════════════════════ LANDING ═══ -->
+<div id="page-landing" class="page active">
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-badge"><span class="badge-dot"></span> 2,400+ builders connected this month</div>
+      <h1>
+        Build software<br>
+        that <em>ships</em>.
+      </h1>
+      <p class="hero-sub">
+        Forgemate connects engineers, designers, and domain experts. Match, collaborate, and build projects that ship, without the noise.
+      </p>
+      <div class="hero-ctas">
+        <button class="btn btn-primary btn-lg" onclick="showPage('dashboard')">Browse Projects →</button>
+        <button class="btn btn-ghost btn-lg" onclick="showPage('profile')">Create Profile</button>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="hero-stat-num">1,240</div><div class="hero-stat-label">Active Projects</div></div>
+      <div class="hero-stat"><div class="hero-stat-num">8,900</div><div class="hero-stat-label">Builders Joined</div></div>
+      <div class="hero-stat"><div class="hero-stat-num">340+</div><div class="hero-stat-label">Hackathons</div></div>
+      <div class="hero-stat"><div class="hero-stat-num">62%</div><div class="hero-stat-label">Teams Placed</div></div>
+    </div>
+  </section>
+
+  <div class="section">
+    <div class="section-label">How it works</div>
+    <h2 class="section-title">From idea to team in three steps</h2>
+    <p class="section-sub">No cold DMs. No LinkedIn spam. Just direct, structured matching with builders who ship.</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon v">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+        </div>
+        <h3>Post your project</h3>
+        <p>Describe your idea, define the roles you need, and tag the stack that matters. Takes under 5 minutes.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon c">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        </div>
+        <h3>Match by stack & role</h3>
+        <p>Builders filter by languages, framework, and timezone. Your project surfaces to the right people.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon g">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="m16 11 2 2 4-4"/></svg>
+        </div>
+        <h3>Accept & start building</h3>
+        <p>Review join requests, read intro notes, and approve your team. Get straight to code.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-banner">
+    <h2>Your next project starts here</h2>
+    <p>Join thousands of builders finding teammates for hackathons like ETHGlobal, HackMIT, and Calhacks.</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <button class="btn btn-primary btn-lg" onclick="showPage('dashboard')">Explore Projects</button>
+      <button class="btn btn-secondary btn-lg" onclick="showPage('profile')">Set Up My Profile</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ DASHBOARD ═══ -->
+<div id="page-dashboard" class="page">
+  <div class="page-header-row">
+    <div>
+      <h1>Explore Projects</h1>
+      <p style="color:var(--text3);font-size:14px;margin-top:4px;">Find your next hackathon team</p>
+    </div>
+    <button class="btn btn-primary" onclick="showModal('create-project')">+ New Project</button>
+  </div>
+
+  <div class="dash-layout">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-section">
+        <div class="search-box">
+          <span style="color:var(--text4);font-size:14px;">⌕</span>
+          <input type="text" placeholder="Search projects…" oninput="filterProjects(this.value)">
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-label">Status</div>
+        <div class="filter-group">
+          <div class="filter-chip active" onclick="filterStatus(this,'all')"><span class="filter-chip-dot" style="background:var(--primary-soft)"></span>All Projects<span class="filter-count">24</span></div>
+          <div class="filter-chip" onclick="filterStatus(this,'open')"><span class="filter-chip-dot" style="background:var(--green)"></span>Open<span class="filter-count">18</span></div>
+          <div class="filter-chip" onclick="filterStatus(this,'closing')"><span class="filter-chip-dot" style="background:var(--amber)"></span>Closing Soon<span class="filter-count">4</span></div>
+          <div class="filter-chip" onclick="filterStatus(this,'full')"><span class="filter-chip-dot" style="background:var(--red)"></span>Full<span class="filter-count">2</span></div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-label">Hackathon</div>
+        <div class="filter-group">
+          <div class="filter-chip active" onclick="toggleFilter(this)">🌐 ETHGlobal Brussels</div>
+          <div class="filter-chip" onclick="toggleFilter(this)">🎓 HackMIT 2026</div>
+          <div class="filter-chip" onclick="toggleFilter(this)">🚀 Calhacks 12</div>
+          <div class="filter-chip" onclick="toggleFilter(this)">🏗️ TreeHacks</div>
+          <div class="filter-chip" onclick="toggleFilter(this)">🌱 Climate Hack</div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-label">Skills Needed</div>
+        <div class="skill-tags">
+          <div class="skill-tag active" onclick="toggleTag(this)">React</div>
+          <div class="skill-tag" onclick="toggleTag(this)">Solidity</div>
+          <div class="skill-tag" onclick="toggleTag(this)">Python</div>
+          <div class="skill-tag" onclick="toggleTag(this)">ML/AI</div>
+          <div class="skill-tag" onclick="toggleTag(this)">Rust</div>
+          <div class="skill-tag" onclick="toggleTag(this)">Figma</div>
+          <div class="skill-tag" onclick="toggleTag(this)">Node.js</div>
+          <div class="skill-tag" onclick="toggleTag(this)">Go</div>
+          <div class="skill-tag" onclick="toggleTag(this)">iOS</div>
+          <div class="skill-tag" onclick="toggleTag(this)">Android</div>
+          <div class="skill-tag" onclick="toggleTag(this)">WebGL</div>
+          <div class="skill-tag" onclick="toggleTag(this)">LLM</div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section-label">Role</div>
+        <div class="filter-group">
+          <div class="filter-chip" onclick="toggleFilter(this)">💻 Frontend Dev</div>
+          <div class="filter-chip" onclick="toggleFilter(this)">⚙️ Backend Dev</div>
+          <div class="filter-chip" onclick="toggleFilter(this)">🤖 ML Engineer</div>
+          <div class="filter-chip" onclick="toggleFilter(this)">🎨 Designer</div>
+          <div class="filter-chip" onclick="toggleFilter(this)">🔗 Blockchain Dev</div>
+          <div class="filter-chip" onclick="toggleFilter(this)">📣 PM / Pitch</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main-content">
+      <div class="content-header">
+        <div class="content-tabs">
+          <button class="tab active">All</button>
+          <button class="tab">Recommended</button>
+          <button class="tab">Newest</button>
+        </div>
+        <div class="results-label"><span id="results-count">18</span> open projects</div>
+      </div>
+
+      <div class="projects-grid" id="projects-grid">
+        <!-- Cards injected by JS -->
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ PROJECT DETAIL ═══ -->
+<div id="page-detail" class="page">
+  <div class="detail-layout">
+    <!-- MAIN -->
+    <div class="detail-main">
+      <div class="breadcrumb">
+        <span onclick="showPage('dashboard')">← Explore</span>
+        <span class="breadcrumb-sep">/</span>
+        <span id="detail-breadcrumb">Project</span>
+      </div>
+
+      <div class="detail-hero">
+        <div id="detail-icon" class="detail-icon v">🔗</div>
+        <div id="detail-status" class="status-badge status-open" style="display:inline-block;margin-bottom:12px">OPEN</div>
+        <div id="detail-title" class="detail-title">DeFi Yield Optimizer</div>
+        <div id="detail-event" class="detail-event">📍 ETHGlobal Brussels · July 11-13, 2026</div>
+        <p id="detail-desc" class="detail-desc" style="margin-top:16px">
+          We're building a cross-chain yield aggregator that automatically moves assets between protocols to maximize returns. Think of it as a smart "set and forget" DeFi strategy layer — powered by on-chain automation and safe vault architecture.
+        </p>
+        <div id="detail-tags" class="card-tags" style="margin-top:16px"></div>
+      </div>
+
+      <div class="detail-card">
+        <div class="detail-card-title"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:8px;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Open Roles</div>
+        <div class="role-list" id="detail-roles"></div>
+      </div>
+
+      <div class="detail-card">
+        <div class="detail-card-title"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:8px;"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg> Tech Stack</div>
+        <div class="skill-tags" id="detail-stack"></div>
+      </div>
+
+      <div class="detail-card">
+        <div class="detail-card-title"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:8px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Timeline & Deliverables</div>
+        <div style="font-size:14px;color:var(--text2);line-height:1.7;">
+          <p><strong style="color:var(--text3)">Day 1:</strong> Architecture setup, smart contract scaffolding, UI wireframes</p>
+          <p style="margin-top:8px"><strong style="color:var(--text3)">Day 2:</strong> Core protocol integrations (Aave, Compound, Curve), frontend polish</p>
+          <p style="margin-top:8px"><strong style="color:var(--text3)">Day 3:</strong> Testing, pitch deck, live demo prep</p>
+        </div>
+      </div>
+
+      <div class="detail-card">
+        <div class="detail-card-title"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:8px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Current Team</div>
+        <div class="team-list" id="detail-team"></div>
+      </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="detail-sidebar">
+      <div class="join-card">
+        <h3>Join this project</h3>
+        <p>Send a short intro to the team lead. They'll review your profile and get back within a few hours.</p>
+        <button class="btn btn-primary btn-lg" onclick="showModal('join-request')">Request to Join</button>
+        <button class="btn btn-ghost btn-sm" style="width:100%;justify-content:center;">Save Project</button>
+      </div>
+
+      <div class="sidebar-card" style="margin-top:16px;">
+        <div class="sidebar-card-title">Project Info</div>
+        <div class="meta-item"><span class="meta-label">Hackathon</span><span class="meta-value">ETHGlobal Brussels</span></div>
+        <div class="meta-item"><span class="meta-label">Dates</span><span class="meta-value">Jul 11–13</span></div>
+        <div class="meta-item"><span class="meta-label">Team Size</span><span class="meta-value">3 / 5</span></div>
+        <div class="meta-item"><span class="meta-label">Open Spots</span><span class="meta-value green">2 remaining</span></div>
+        <div class="meta-item"><span class="meta-label">Posted</span><span class="meta-value">2 days ago</span></div>
+        <div class="meta-item"><span class="meta-label">Lead</span><span class="meta-value" style="cursor:pointer;color:var(--primary-soft)" onclick="showPage('profile')">Alex Kim</span></div>
+      </div>
+
+      <div class="sidebar-card">
+        <div class="sidebar-card-title">Location</div>
+        <div style="font-size:13px;color:var(--text2);">🌍 In-person, Brussels Belgium<br><span style="color:var(--text3)">Remote collaboration welcome</span></div>
+      </div>
+
+      <div class="sidebar-card">
+        <div class="sidebar-card-title">Activity</div>
+        <div class="meta-item"><span class="meta-label">Views</span><span class="meta-value">142</span></div>
+        <div class="meta-item"><span class="meta-label">Requests</span><span class="meta-value">7</span></div>
+        <div class="meta-item"><span class="meta-label">Saved by</span><span class="meta-value">23</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ PROFILE ═══ -->
+<div id="page-profile" class="page">
+  <div class="profile-layout">
+    <div>
+      <div class="profile-card">
+        <div class="profile-avatar" style="background:linear-gradient(135deg,#3B82F6,#0D9488)">AK</div>
+        <div class="profile-name">Alex Kim</div>
+        <div class="profile-role">Full-Stack · Blockchain Dev</div>
+        <div class="profile-location">📍 San Francisco, CA</div>
+        <div class="availability-badge"><span class="avail-dot"></span>Available for hackathons</div>
+        <p class="profile-bio" style="margin-top:16px">
+          CS @ Stanford '25. I love building at the intersection of web3 and consumer apps. ETHGlobal finalist (3×), TreeHacks winner. Currently exploring ZK proofs and DeFi automation.
+        </p>
+        <div class="profile-links">
+          <a class="profile-link" href="#" onclick="return false;">
+            <span class="profile-link-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+            </span>
+            github.com/alexkim-dev
+          </a>
+          <a class="profile-link" href="#" onclick="return false;">
+            <span class="profile-link-icon">
+              <svg width="16" height="16" viewBox="0 0 127.14 96.36" fill="currentColor"><path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22h0C129.24,52.84,122.09,29.11,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/></svg>
+            </span>
+            alexkim#0042
+          </a>
+          <a class="profile-link" href="#" onclick="return false;">
+            <span class="profile-link-icon">🔗</span>
+            alexkim.dev
+          </a>
+        </div>
+        <button class="btn btn-secondary btn-sm" style="width:100%;justify-content:center;">Edit Profile</button>
+      </div>
+    </div>
+
+    <div class="profile-main">
+      <div class="profile-section">
+        <div class="profile-section-title">Skills</div>
+        <div class="skills-cloud">
+          <span class="skill-pill expert">Solidity</span>
+          <span class="skill-pill expert">React</span>
+          <span class="skill-pill expert">TypeScript</span>
+          <span class="skill-pill mid">Node.js</span>
+          <span class="skill-pill mid">Hardhat</span>
+          <span class="skill-pill mid">wagmi</span>
+          <span class="skill-pill mid">ethers.js</span>
+          <span class="skill-pill mid">PostgreSQL</span>
+          <span class="skill-pill beginner">Rust</span>
+          <span class="skill-pill beginner">ZK / Circom</span>
+          <span class="skill-pill beginner">Figma</span>
+        </div>
+        <div class="skill-level-legend">
+          <div class="legend-item"><span class="legend-dot" style="background:var(--primary-soft)"></span>Expert</div>
+          <div class="legend-item"><span class="legend-dot" style="background:var(--secondary)"></span>Proficient</div>
+          <div class="legend-item"><span class="legend-dot" style="background:var(--text4)"></span>Learning</div>
+        </div>
+      </div>
+
+      <div class="profile-section">
+        <div class="profile-section-title">Looking For</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+          <span class="tag tag-primary">Blockchain Hackathons</span>
+          <span class="tag tag-secondary">DeFi / Web3</span>
+          <span class="tag tag-g">Consumer Apps</span>
+          <span class="tag tag-n">AI-adjacent</span>
+        </div>
+        <p style="font-size:13px;color:var(--text3);margin-top:12px;line-height:1.6;">
+          Open to joining as a <strong style="color:var(--text2)">smart contract lead</strong> or <strong style="color:var(--text2)">full-stack dev</strong>. Can also lead teams. Prefer in-person events but remote is fine.
+        </p>
+      </div>
+
+      <div class="profile-section">
+        <div class="profile-section-title">Hackathon History</div>
+        <div class="projects-mini">
+          <div class="project-mini">
+            <div class="project-mini-icon v">🔗</div>
+            <div>
+              <div class="project-mini-title">ChainGuard — ETHGlobal SF 2025</div>
+              <div class="project-mini-role">Blockchain Lead · 🏆 Finalist</div>
+            </div>
+            <span style="margin-left:auto;font-size:11px;color:var(--text4)">2025</span>
+          </div>
+          <div class="project-mini">
+            <div class="project-mini-icon c">🌊</div>
+            <div>
+              <div class="project-mini-title">AquaDAO — TreeHacks 2025</div>
+              <div class="project-mini-role">Full-Stack · 🥇 Winner (Climate Track)</div>
+            </div>
+            <span style="margin-left:auto;font-size:11px;color:var(--text4)">2025</span>
+          </div>
+          <div class="project-mini">
+            <div class="project-mini-icon g">🤖</div>
+            <div>
+              <div class="project-mini-title">NeuralVault — HackMIT 2024</div>
+              <div class="project-mini-role">Backend Dev · Top 10</div>
+            </div>
+            <span style="margin-left:auto;font-size:11px;color:var(--text4)">2024</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="profile-section">
+        <div class="profile-section-title">Stats</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;">
+          <div style="text-align:center;">
+            <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:24px;font-weight:700;color:var(--primary-soft)">7</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:2px">Hackathons</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:24px;font-weight:700;color:var(--secondary)">3</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:2px">Awards Won</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:24px;font-weight:700;color:var(--green)">94%</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:2px">Accept Rate</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:24px;font-weight:700;color:var(--amber)">4.9</div>
+            <div style="font-size:11px;color:var(--text3);margin-top:2px">Team Rating</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ JOIN REQUESTS ═══ -->
+<div id="page-requests" class="page">
+  <div class="requests-layout">
+    <div class="requests-header">
+      <div>
+        <h1>Join Requests</h1>
+        <p style="font-size:13px;color:var(--text3);margin-top:4px">Managing: <strong style="color:var(--primary-soft)">DeFi Yield Optimizer</strong></p>
+      </div>
+      <div class="requests-tabs">
+        <div class="req-tab active" onclick="switchReqTab(this,'pending')">Pending (3)</div>
+        <div class="req-tab" onclick="switchReqTab(this,'accepted')">Accepted (2)</div>
+        <div class="req-tab" onclick="switchReqTab(this,'declined')">Declined (2)</div>
+      </div>
+    </div>
+
+    <div id="req-pending">
+      <div class="req-card" id="req-1">
+        <div class="req-avatar" style="background:linear-gradient(135deg,#3B82F6,#60A5FA)">MR</div>
+        <div class="req-info">
+          <div class="req-name-row">
+            <span class="req-name">Maya Rodriguez</span>
+            <span class="req-role tag-primary tag" style="font-size:10px">Frontend Dev</span>
+          </div>
+          <p class="req-message">"Hey! I'm super into DeFi and have built yield dashboards before (Yearn, Convex interfaces). I'd love to own the frontend for this — I think a clean, real-time UI is what separates good DeFi tools. Can share my past work."</p>
+          <div class="req-skills">
+            <span class="skill-tag active" style="cursor:default">React</span>
+            <span class="skill-tag active" style="cursor:default">wagmi</span>
+            <span class="skill-tag active" style="cursor:default">TailwindCSS</span>
+            <span class="skill-tag" style="cursor:default">TypeScript</span>
+          </div>
+          <div class="req-meta">
+            <span>⏱ 4 hours ago</span>
+            <a class="req-link" href="#" onclick="return false;">View Profile →</a>
+            <a class="req-link" href="#" onclick="return false;">GitHub ↗</a>
+          </div>
+        </div>
+        <div class="req-actions">
+          <button class="btn btn-primary btn-sm" onclick="handleRequest('req-1','accept','Maya Rodriguez')">Accept</button>
+          <button class="btn btn-ghost btn-sm" onclick="handleRequest('req-1','decline','Maya Rodriguez')">Decline</button>
+        </div>
+      </div>
+
+      <div class="req-card" id="req-2">
+        <div class="req-avatar" style="background:linear-gradient(135deg,#0D9488,#0F766E)">JS</div>
+        <div class="req-info">
+          <div class="req-name-row">
+            <span class="req-name">James Sato</span>
+            <span class="req-role tag-secondary tag" style="font-size:10px">ML Engineer</span>
+          </div>
+          <p class="req-message">"I'm currently doing research on on-chain MEV and would love to contribute an ML-based prediction layer for this optimizer. I can add risk scoring and rebalancing signals on top of your vault logic."</p>
+          <div class="req-skills">
+            <span class="skill-tag active" style="cursor:default">Python</span>
+            <span class="skill-tag active" style="cursor:default">PyTorch</span>
+            <span class="skill-tag" style="cursor:default">Dune Analytics</span>
+            <span class="skill-tag" style="cursor:default">SQL</span>
+          </div>
+          <div class="req-meta">
+            <span>⏱ 9 hours ago</span>
+            <a class="req-link" href="#" onclick="return false;">View Profile →</a>
+            <a class="req-link" href="#" onclick="return false;">GitHub ↗</a>
+          </div>
+        </div>
+        <div class="req-actions">
+          <button class="btn btn-primary btn-sm" onclick="handleRequest('req-2','accept','James Sato')">Accept</button>
+          <button class="btn btn-ghost btn-sm" onclick="handleRequest('req-2','decline','James Sato')">Decline</button>
+        </div>
+      </div>
+
+      <div class="req-card" id="req-3">
+        <div class="req-avatar" style="background:linear-gradient(135deg,#10B981,#059669)">LP</div>
+        <div class="req-info">
+          <div class="req-name-row">
+            <span class="req-name">Lena Park</span>
+            <span class="req-role tag-g tag" style="font-size:10px;background:rgba(16,185,129,0.12);color:var(--green)">Designer</span>
+          </div>
+          <p class="req-message">"Product designer with DeFi UX experience. Previously designed for a DEX aggregator (acquired). I know how to make complex financial interfaces feel approachable. Happy to also handle the pitch deck."</p>
+          <div class="req-skills">
+            <span class="skill-tag" style="cursor:default">Figma</span>
+            <span class="skill-tag" style="cursor:default">Framer</span>
+            <span class="skill-tag" style="cursor:default">UX Research</span>
+          </div>
+          <div class="req-meta">
+            <span>⏱ 1 day ago</span>
+            <a class="req-link" href="#" onclick="return false;">View Profile →</a>
+            <a class="req-link" href="#" onclick="return false;">Portfolio ↗</a>
+          </div>
+        </div>
+        <div class="req-actions">
+          <button class="btn btn-primary btn-sm" onclick="handleRequest('req-3','accept','Lena Park')">Accept</button>
+          <button class="btn btn-ghost btn-sm" onclick="handleRequest('req-3','decline','Lena Park')">Decline</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="req-accepted" style="display:none">
+      <div class="req-card">
+        <div class="req-avatar" style="background:linear-gradient(135deg,#F59E0B,#D97706)">KP</div>
+        <div class="req-info">
+          <div class="req-name-row">
+            <span class="req-name">Kevin Patel</span>
+            <span class="req-role tag-primary tag" style="font-size:10px">Backend Dev</span>
+            <span style="margin-left:4px;font-size:10px;background:rgba(16,185,129,0.15);color:var(--green);padding:2px 7px;border-radius:4px;font-weight:600">Accepted</span>
+          </div>
+          <p class="req-message">"Accepted 2 days ago. Looking forward to working on the API layer and contract indexing."</p>
+          <div class="req-meta"><span>✓ Accepted 2 days ago</span></div>
+        </div>
+        <div class="req-actions">
+          <button class="btn btn-ghost btn-sm" onclick="showToast('Discord invite sent to Kevin!')">Send Discord</button>
+        </div>
+      </div>
+      <div class="req-card">
+        <div class="req-avatar" style="background:linear-gradient(135deg,#F97316,#EA580C)">SA</div>
+        <div class="req-info">
+          <div class="req-name-row">
+            <span class="req-name">Sara Ahmed</span>
+            <span class="req-role tag-secondary tag" style="font-size:10px">Smart Contract Dev</span>
+            <span style="margin-left:4px;font-size:10px;background:rgba(16,185,129,0.15);color:var(--green);padding:2px 7px;border-radius:4px;font-weight:600">Accepted</span>
+          </div>
+          <p class="req-message">"Accepted 1 day ago. Sara has already joined the Discord and started reviewing the contract architecture."</p>
+          <div class="req-meta"><span>✓ Accepted 1 day ago</span></div>
+        </div>
+        <div class="req-actions">
+          <button class="btn btn-ghost btn-sm" onclick="showToast('Discord invite sent to Sara!')">Send Discord</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="req-declined" style="display:none">
+      <div class="empty-state">
+        <div class="empty-state-icon">🚫</div>
+        <p>Declined requests will appear here.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ MODALS ═══ -->
+
+<!-- JOIN REQUEST MODAL -->
+<div class="modal-overlay" id="modal-join-request">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('join-request')">✕</button>
+    <div id="join-form-content">
+      <h2>Request to Join</h2>
+      <p class="modal-sub">Your profile will be shared with the team lead.</p>
+      <div class="form-group">
+        <label class="form-label">Which role are you applying for?</label>
+        <select class="form-select">
+          <option>Frontend Developer</option>
+          <option>ML Engineer</option>
+          <option>Designer / UX</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Intro message</label>
+        <textarea class="form-textarea" placeholder="Tell the team why you'd be a great fit. Mention relevant experience, past hackathons, or specific ideas you'd contribute…"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Your strongest relevant skill</label>
+        <input class="form-input" type="text" placeholder="e.g. 3 years Solidity, built 2 DeFi protocols">
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-ghost" onclick="closeModal('join-request')">Cancel</button>
+        <button class="btn btn-primary" onclick="submitJoinRequest()">Send Request →</button>
+      </div>
+    </div>
+    <div id="join-success-content" class="success-state" style="display:none">
+      <div class="success-icon">🚀</div>
+      <h3>Request Sent!</h3>
+      <p>The team lead will review your profile and get back to you. You'll get a notification here when they respond.</p>
+      <button class="btn btn-secondary" style="margin-top:16px;width:100%;justify-content:center" onclick="closeModal('join-request')">Got it</button>
+    </div>
+  </div>
+</div>
+
+<!-- CREATE PROJECT MODAL -->
+<div class="modal-overlay" id="modal-create-project">
+  <div class="modal" style="max-width:540px;">
+    <button class="modal-close" onclick="closeModal('create-project')">✕</button>
+    <h2>New Project</h2>
+    <p class="modal-sub">Create your hackathon project and find teammates.</p>
+    <div class="form-group">
+      <label class="form-label">Project Name</label>
+      <input class="form-input" type="text" placeholder="e.g. ChainGuard, AquaDAO…">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Hackathon</label>
+      <select class="form-select">
+        <option>ETHGlobal Brussels 2026</option>
+        <option>HackMIT 2026</option>
+        <option>Calhacks 12</option>
+        <option>TreeHacks</option>
+        <option>Climate Hack 2026</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Short Description</label>
+      <textarea class="form-textarea" placeholder="What are you building? What problem does it solve?"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Roles Needed</label>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;">
+        <span class="skill-tag" onclick="toggleTag(this)">Frontend Dev</span>
+        <span class="skill-tag" onclick="toggleTag(this)">Backend Dev</span>
+        <span class="skill-tag" onclick="toggleTag(this)">Smart Contract</span>
+        <span class="skill-tag" onclick="toggleTag(this)">ML Engineer</span>
+        <span class="skill-tag" onclick="toggleTag(this)">Designer</span>
+        <span class="skill-tag" onclick="toggleTag(this)">PM / Pitch</span>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-ghost" onclick="closeModal('create-project')">Cancel</button>
+      <button class="btn btn-primary" onclick="showToast('Project created! 🎉');closeModal('create-project')">Create Project →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── DATA ──
+const projects = [
+  { id:1, icon:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>`, iconClass:'v', color:'pc-primary', title:'Aether Vaults', desc:'Cross-chain yield coordinator that auto-rebalances vault assets across decentralized indexes.', tags:['Solidity','React','DeFi'], tagClasses:['tag-primary','tag-secondary','tag-n'], status:'open', statusLabel:'OPEN', event:'ETHGlobal Brussels', spots:2, teamColors:['#C2410C','#0F172A','#14532D'], teamInitials:['AK','SR','KP'] },
+  { id:2, icon:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>`, iconClass:'c', color:'pc-cyan', title:'Telescope SDK', desc:'Distributed logging and execution tracing agent designed for light-weight SQLite database syncs.', tags:['Python','LLM','React'], tagClasses:['tag-secondary','tag-primary','tag-n'], status:'open', statusLabel:'OPEN', event:'HackMIT 2026', spots:3, teamColors:['#EA580C','#7C2D12'], teamInitials:['MR','JS'] },
+  { id:3, icon:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 3.5 1 8.5C18 17 14 20 11 20z"/><path d="M19 2c-2.26 2.33-5.7 5.07-8 8"/></svg>`, iconClass:'g', color:'pc-green', title:'Sapling Protocol', desc:'On-chain registry with satellite coverage telemetry verification for agricultural conservation.', tags:['Solidity','Python','IoT'], tagClasses:['tag-g','tag-primary','tag-n'], status:'closing', statusLabel:'CLOSING', event:'Climate Hack 2026', spots:1, teamColors:['#14532D','#C2410C','#0F172A','#7C2D12'], teamInitials:['LP','AK','JS','KP'] },
+  { id:4, icon:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4M8 10v4M15 11h.01M18 13h.01"/></svg>`, iconClass:'a', color:'pc-primary', title:'PixelForge', desc:'Asymmetric digital canvas engine with provable creator attribution and lightweight sync layers.', tags:['Solidity','WebGL','React'], tagClasses:['tag-primary','tag-secondary','tag-n'], status:'open', statusLabel:'OPEN', event:'ETHGlobal Brussels', spots:2, teamColors:['#EA580C','#14532D'], teamInitials:['SA','LP'] },
+  { id:5, icon:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="14 3 14 8 20 8"/><path d="M12 11v6M9 14h6"/></svg>`, iconClass:'c', color:'pc-cyan', title:'Tessera Ledger', desc:'Privacy-preserving state record coordination using zero-knowledge verification frameworks.', tags:['ZK/Circom','Rust','React'], tagClasses:['tag-secondary','tag-primary','tag-n'], status:'open', statusLabel:'OPEN', event:'TreeHacks', spots:2, teamColors:['#7C2D12','#C2410C'], teamInitials:['JD','MR'] },
+  { id:6, icon:`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>`, iconClass:'v', color:'pc-primary', title:'Stems Audio', desc:'Decentralized royalties indexing system for collaborative audio stems and modular track licensing.', tags:['Solidity','Node.js','Figma'], tagClasses:['tag-primary','tag-n','tag-n'], status:'full', statusLabel:'FULL', event:'Calhacks 12', spots:0, teamColors:['#0F172A','#EA580C','#C2410C','#14532D','#7C2D12'], teamInitials:['TK','AR','BN','LP','SD'] },
+];
+
+const detailRoles = [
+  { name:'Frontend Developer', dot:'#C2410C', count:'1 spot', filled:false },
+  { name:'ML / Data Engineer', dot:'#0F172A', count:'1 spot', filled:false },
+  { name:'Smart Contract Dev', dot:'#14532D', count:'Filled', filled:true },
+];
+const detailStack = ['Solidity','Hardhat','ethers.js','React','Viem','wagmi','Python','PostgreSQL'];
+const detailTeam = [
+  { initials:'AK', bg:'linear-gradient(135deg,#C2410C,#0F172A)', name:'Alex Kim', role:'Team Lead · Blockchain Dev', lead:true },
+  { initials:'SR', bg:'linear-gradient(135deg,#EA580C,#7C2D12)', name:'Sara Ahmed', role:'Smart Contract Dev', lead:false },
+  { initials:'KP', bg:'linear-gradient(135deg,#FAF9F5,#E7E4DC)', name:'Kevin Patel', role:'Backend Dev', lead:false },
+];
+
+// ── RENDER ──
+function renderProjects(list) {
+  const grid = document.getElementById('projects-grid');
+  grid.innerHTML = list.map(p => `
+    <div class="project-card ${p.color}" onclick="showDetail(${p.id})">
+      <div class="card-header">
+        <div class="card-icon ${p.iconClass}">${p.icon}</div>
+        <span class="status-badge status-${p.status}">${p.statusLabel}</span>
+      </div>
+      <div class="card-title">${p.title}</div>
+      <p class="card-desc">${p.desc}</p>
+      <div class="card-tags">${p.tags.map((t,i)=>`<span class="tag ${p.tagClasses[i]}">${t}</span>`).join('')}</div>
+      <div class="card-footer">
+        <div class="card-team">
+          <div class="avatar-stack">${p.teamInitials.map((init,i)=>`<div class="avatar-sm" style="background:${p.teamColors[i]}">${init}</div>`).join('')}</div>
+          <span class="card-spots">${p.spots > 0 ? `<span>${p.spots} open</span>` : 'Full team'}</span>
+        </div>
+        <span class="card-event">${p.event}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function showDetail(id) {
+  const p = projects.find(x=>x.id===id);
+  if(!p) return;
+  document.getElementById('detail-breadcrumb').textContent = p.title;
+  document.getElementById('detail-icon').innerHTML = p.icon;
+  document.getElementById('detail-icon').className = `detail-icon ${p.iconClass}`;
+  document.getElementById('detail-title').textContent = p.title;
+  document.getElementById('detail-status').className = `status-badge status-${p.status}`;
+  document.getElementById('detail-status').textContent = p.statusLabel;
+  document.getElementById('detail-desc').textContent = p.desc;
+  document.getElementById('detail-tags').innerHTML = p.tags.map((t,i)=>`<span class="tag ${p.tagClasses[i]}">${t}</span>`).join('');
+  document.getElementById('detail-roles').innerHTML = detailRoles.map(r=>`
+    <div class="role-item">
+      <div class="role-info">
+        <span class="role-dot" style="background:${r.dot}"></span>
+        <span class="role-name">${r.name}</span>
+      </div>
+      <span class="role-count" style="${r.filled?'color:var(--text4)':'color:var(--green)'}">${r.count}</span>
+    </div>`).join('');
+  document.getElementById('detail-stack').innerHTML = detailStack.map(s=>`<span class="skill-tag" style="cursor:default">${s}</span>`).join('');
+  document.getElementById('detail-team').innerHTML = detailTeam.map(m=>`
+    <div class="team-member" onclick="showPage('profile')">
+      <div class="member-avatar" style="background:${m.bg}">${m.initials}</div>
+      <div class="member-info">
+        <div class="member-name">${m.name}</div>
+        <div class="member-role">${m.role}</div>
+      </div>
+      ${m.lead?'<span class="member-lead-badge">LEAD</span>':''}
+    </div>`).join('');
+  showPage('detail');
+}
+
+renderProjects(projects.filter(p=>p.status!=='full'));
+document.getElementById('results-count').textContent = projects.filter(p=>p.status!=='full').length;
+
+// ── NAVIGATION ──
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  window.scrollTo(0,0);
+  document.querySelectorAll('.nav-link').forEach(l=>l.classList.remove('active'));
+  const map = {dashboard:'Explore',profile:'My Profile',requests:'Requests'};
+  document.querySelectorAll('.nav-link').forEach(l=>{
+    if(l.textContent.trim().startsWith(map[id]||'')) l.classList.add('active');
+  });
+}
+
+// ── FILTERS ──
+let currentSearch = '';
+let currentStatus = 'all';
+
+function filterStatus(el, status) {
+  document.querySelectorAll('.sidebar .filter-group:first-of-type .filter-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  currentStatus = status;
+  applyFilters();
+}
+function toggleFilter(el) {
+  el.classList.toggle('active');
+  applyFilters();
+}
+function toggleTag(el) {
+  el.classList.toggle('active');
+  applyFilters();
+}
+function filterProjects(q) {
+  currentSearch = q.toLowerCase();
+  applyFilters();
+}
+
+function applyFilters() {
+  let filtered = projects;
+
+  // 1. Status Filter
+  if (currentStatus !== 'all') {
+    filtered = filtered.filter(p => p.status === currentStatus);
+  }
+
+  // 2. Search Filter
+  if (currentSearch) {
+    filtered = filtered.filter(p => 
+      p.title.toLowerCase().includes(currentSearch) || 
+      p.desc.toLowerCase().includes(currentSearch) ||
+      p.tags.some(t => t.toLowerCase().includes(currentSearch))
+    );
+  }
+
+  // 3. Hackathons Filter
+  const activeHackathonEls = Array.from(document.querySelectorAll('.sidebar .filter-group:nth-of-type(2) .filter-chip.active'));
+  if (activeHackathonEls.length > 0) {
+    const activeHackathons = activeHackathonEls.map(el => {
+      return el.textContent.replace(/[^\w\s\d]/g, '').trim().toLowerCase();
+    });
+    filtered = filtered.filter(p => {
+      const pEventClean = p.event.toLowerCase();
+      return activeHackathons.some(h => pEventClean.includes(h) || h.includes(pEventClean));
+    });
+  }
+
+  // 4. Required Stacks Filter
+  const activeSkillEls = Array.from(document.querySelectorAll('.sidebar .skill-tags .skill-tag.active'));
+  if (activeSkillEls.length > 0) {
+    const activeSkills = activeSkillEls.map(el => el.textContent.trim().toLowerCase());
+    filtered = filtered.filter(p => {
+      const pTags = p.tags.map(t => t.toLowerCase());
+      return activeSkills.every(s => pTags.some(t => t.includes(s) || s.includes(t)));
+    });
+  }
+
+  renderProjects(filtered);
+  document.getElementById('results-count').textContent = filtered.length;
+}
+
+// ── MODALS ──
+function showModal(id) {
+  if(id==='join-request'){
+    document.getElementById('join-form-content').style.display='';
+    document.getElementById('join-success-content').style.display='none';
+  }
+  document.getElementById('modal-'+id).classList.add('open');
+}
+function closeModal(id) { document.getElementById('modal-'+id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{ if(e.target===o) o.classList.remove('open'); }));
+
+function submitJoinRequest() {
+  document.getElementById('join-form-content').style.display='none';
+  document.getElementById('join-success-content').style.display='';
+}
+
+// ── REQUESTS ──
+function switchReqTab(el, tab) {
+  document.querySelectorAll('.req-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  ['pending','accepted','declined'].forEach(t=>{
+    const el2 = document.getElementById('req-'+t);
+    if(el2) el2.style.display = t===tab?'':'none';
+  });
+}
+function handleRequest(id, action, name) {
+  const card = document.getElementById(id);
+  if(!card) return;
+  card.style.opacity='0'; card.style.transform='translateX(40px)'; card.style.transition='all 0.35s';
+  setTimeout(()=>{ card.style.display='none'; }, 350);
+  showToast(action==='accept' ? `✓ ${name} added to the team!` : `Request from ${name} declined.`);
+}
+
+// ── TOAST ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 3200);
+}
+</script>
+</body>
+</html>
