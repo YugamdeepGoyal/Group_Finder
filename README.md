@@ -34,20 +34,7 @@ The first time it runs, it will automatically create `forgemate.db` (a SQLite
 file right in this folder) and seed it with 6 demo users and 6 demo projects.
 Delete `forgemate.db` any time you want a fresh start.
 
-## 4. Log in
-
-Use any of these demo accounts (password for all: `forgemate123`):
-
-| Username | Role |
-|---|---|
-| alexkim | Full-Stack / Smart Contract Lead |
-| mayarodriguez | React Developer |
-| jamessato | ML Engineer |
-| lenapark | Lead UX Designer |
-| saraahmed | Solidity Developer |
-| kevinpatel | Systems / Indexing Engineer |
-
-Or click "Sign up" to create your own account.
+click "Sign up" to create your own account.
 
 ## 5. What you can do
 
