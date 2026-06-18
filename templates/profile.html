@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}{{ profile_user.display_name }}{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+
+  <aside class="profile-sidebar-card">
+    <div class="profile-avatar-large" style="background:{{ profile_user.avatar_color }};">{{ profile_user.initials }}</div>
+    <div class="profile-name">{{ profile_user.display_name }}</div>
+    {% if profile_user.role_title %}<div class="profile-role">{{ profile_user.role_title }}</div>{% endif %}
+
+    <div class="profile-meta-block">
+      {% if profile_user.location %}<div class="profile-meta-row">{{ profile_user.location }}</div>{% endif %}
+      {% if profile_user.github_url %}<div class="profile-meta-row"><a href="{{ profile_user.github_url }}" target="_blank" rel="noopener">{{ profile_user.github_url }}</a></div>{% endif %}
+      {% if profile_user.website_url %}<div class="profile-meta-row"><a href="{{ profile_user.website_url }}" target="_blank" rel="noopener">{{ profile_user.website_url }}</a></div>{% endif %}
+    </div>
+
+    {% if is_own %}
+    <a class="btn btn-secondary btn-block" style="margin-top:24px;" href="{{ url_for('edit_profile') }}">Edit Profile</a>
+    {% endif %}
+  </aside>
+
+  <div class="profile-body">
+
+    {% if profile_user.bio %}
+    <div>
+      <div class="profile-block-title">About</div>
+      <p style="font-size:14px; color:var(--text-sec); line-height:1.6;">{{ profile_user.bio }}</p>
+    </div>
+    {% endif %}
+
+    <div>
+      <div class="profile-block-title">Skills</div>
+      {% set skills_list = profile_user.skills.all() %}
+      {% if skills_list %}
+      <div class="skills-cloud">
+        {% for s in skills_list %}
+        <span class="skill-pill {{ s.level }}">{{ s.name }}</span>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="proj-sub-text">No skills listed yet.</p>
+      {% endif %}
+    </div>
+
+    <div>
+      <div class="profile-block-title">Leading</div>
+      {% if led_projects %}
+      {% for p in led_projects %}
+      <a class="project-mini" href="{{ url_for('project_detail', project_id=p.id) }}">
+        <div>
+          <div class="project-mini-title">{{ p.icon_emoji }} {{ p.title }}</div>
+          <div class="project-mini-role">{{ p.event }}</div>
+        </div>
+        <span class="badge badge-{{ p.status }}">{{ p.status_label }}</span>
+      </a>
+      {% endfor %}
+      {% else %}
+      <p class="proj-sub-text">Not leading any projects yet.</p>
+      {% endif %}
+    </div>
+
+    <div>
+      <div class="profile-block-title">Member Of</div>
+      {% if memberships %}
+      {% for m in memberships %}
+      <a class="project-mini" href="{{ url_for('project_detail', project_id=m.project.id) }}">
+        <div>
+          <div class="project-mini-title">{{ m.project.icon_emoji }} {{ m.project.title }}</div>
+          <div class="project-mini-role">{{ m.role_label }}</div>
+        </div>
+        <span class="badge badge-{{ m.project.status }}">{{ m.project.status_label }}</span>
+      </a>
+      {% endfor %}
+      {% else %}
+      <p class="proj-sub-text">Not a member of any other team yet.</p>
+      {% endif %}
+    </div>
+
+  </div>
+</div>
+{% endblock %}

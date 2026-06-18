@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Forgemate{% endblock %} — Builders Directory</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="{{ url_for('landing') }}">
+    <div class="nav-logo-icon">F</div>
+    <span class="nav-logo-text">FORGEMATE</span>
+  </a>
+
+  {% if current_user.is_authenticated %}
+  <div class="nav-links">
+    <a class="nav-link {{ 'active' if active_page=='directory' }}" href="{{ url_for('directory') }}">Directory</a>
+    <a class="nav-link {{ 'active' if active_page=='profile' }}" href="{{ url_for('my_profile') }}">Profile</a>
+    <a class="nav-link {{ 'active' if active_page=='inbox' }}" href="{{ url_for('inbox') }}">
+      Inbox
+      {% if current_user.pending_inbox_count > 0 %}
+      <span class="nav-badge">{{ current_user.pending_inbox_count }}</span>
+      {% endif %}
+    </a>
+  </div>
+  <div class="nav-actions">
+    <a class="btn btn-primary btn-sm" href="{{ url_for('new_project') }}">+ Post Project</a>
+    <a class="nav-avatar" style="background:{{ current_user.avatar_color }};" href="{{ url_for('my_profile') }}" title="{{ current_user.display_name }}">{{ current_user.initials }}</a>
+    <a class="btn btn-ghost btn-sm" href="{{ url_for('logout') }}">Log out</a>
+  </div>
+  {% else %}
+  <div class="nav-links"></div>
+  <div class="nav-actions">
+    <a class="btn btn-ghost btn-sm" href="{{ url_for('login') }}">Log in</a>
+    <a class="btn btn-primary btn-sm" href="{{ url_for('register') }}">Sign up free →</a>
+  </div>
+  {% endif %}
+</nav>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+  <div class="flash-stack">
+    {% for category, message in messages %}
+    <div class="flash flash-{{ category if category in ['success','error','info'] else 'info' }}">{{ message }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+{% endwith %}
+
+<div class="page">
+  {% block content %}{% endblock %}
+</div>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

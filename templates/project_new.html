@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Post a Project{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Post a Project</h1>
+  <p>Register a new vault and start recruiting builders.</p>
+</div>
+
+<div class="form-container">
+  <div class="card">
+    <form method="post" action="{{ url_for('new_project') }}">
+      <div class="form-group">
+        <label class="form-label">Project title</label>
+        <input class="form-input" type="text" name="title" value="{{ form.get('title','') }}" placeholder="e.g. Aether Vaults" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea class="form-textarea" name="description" placeholder="What are you building?">{{ form.get('description','') }}</textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Hackathon</label>
+          <input class="form-input" type="text" name="event" value="{{ form.get('event','') }}" placeholder="e.g. ETHGlobal Brussels">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Icon emoji</label>
+          <input class="form-input" type="text" name="icon_emoji" value="{{ form.get('icon_emoji','🔗') }}" maxlength="4">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Skills / tags</label>
+        <input class="form-input" type="text" name="tags" value="{{ form.get('tags','') }}" placeholder="Comma separated, e.g. Solidity, React, Rust">
+        <div class="form-hint">Separate each skill with a comma.</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Open roles</label>
+        <textarea class="form-textarea" name="roles" placeholder="One role per line, e.g.&#10;Frontend Developer&#10;Smart Contract Engineer">{{ form.get('roles','') }}</textarea>
+        <div class="form-hint">One role title per line. Leave blank if you don't need to list specific roles.</div>
+      </div>
+
+      <button class="btn btn-primary btn-block" type="submit">Register Project</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

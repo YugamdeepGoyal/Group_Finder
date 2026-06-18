@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Inbox{% endblock %}
+
+{% block content %}
+<div class="req-container">
+  <div class="dir-title">
+    <h1>Sync Requests</h1>
+    <p>Pending requests to join projects you lead.</p>
+  </div>
+
+  {% if requests %}
+  <div class="req-list">
+    {% for jr in requests %}
+    <div class="req-row">
+      <div class="req-avatar-circle" style="background:{{ jr.applicant.avatar_color }};">{{ jr.applicant.initials }}</div>
+      <div class="req-body-content" style="flex:1;">
+        <h4>
+          <a href="{{ url_for('view_profile', username=jr.applicant.username) }}">{{ jr.applicant.display_name }}</a>
+          <span class="proj-sub-text">wants to join</span>
+          <a href="{{ url_for('project_detail', project_id=jr.project.id) }}">{{ jr.project.title }}</a>
+          {% if jr.role %}<span class="tag-mono">{{ jr.role.title }}</span>{% endif %}
+        </h4>
+        {% if jr.message %}<p class="req-message-text">"{{ jr.message }}"</p>{% endif %}
+
+        <div class="req-actions-panel" style="flex-direction:row;">
+          <form method="post" action="{{ url_for('accept_request', request_id=jr.id) }}" style="display:flex; gap:8px; align-items:center;">
+            <input class="form-input" type="text" name="role_label" placeholder="{{ jr.role.title if jr.role else 'Contributor' }}" style="width:160px; padding:8px 10px;">
+            <button class="btn btn-primary btn-sm" type="submit">Accept</button>
+          </form>
+          <form method="post" action="{{ url_for('decline_request', request_id=jr.id) }}">
+            <button class="btn btn-ghost btn-sm" type="submit">Decline</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state" style="margin-top:24px;">
+    <p>No pending requests right now.</p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

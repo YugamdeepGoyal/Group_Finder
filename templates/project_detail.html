@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}{{ project.title }}{% endblock %}
+
+{% block content %}
+<div class="detail-container">
+  <a class="detail-back" href="{{ url_for('directory') }}">← Back to directory</a>
+
+  <div class="detail-card">
+    <div class="proj-info-cell">
+      <div class="proj-icon-box lg">{{ project.icon_emoji }}</div>
+      <div>
+        <h1 style="font-family:'Plus Jakarta Sans',sans-serif; font-size:24px; font-weight:700; letter-spacing:-0.5px;">{{ project.title }}</h1>
+        <div class="proj-sub-text" style="margin-top:6px;"><span class="badge badge-{{ project.status }}">{{ project.status_label }}</span></div>
+      </div>
+    </div>
+
+    <p style="margin-top:24px; color:var(--text-sec); font-size:14px; line-height:1.6;">{{ project.description }}</p>
+
+    <div class="detail-meta-list">
+      <div class="detail-meta-item">
+        <span class="detail-meta-label">Hackathon</span>
+        <span class="detail-meta-val">{{ project.event }}</span>
+      </div>
+      <div class="detail-meta-item">
+        <span class="detail-meta-label">Lead</span>
+        <span class="detail-meta-val"><a href="{{ url_for('view_profile', username=project.lead.username) }}">{{ project.lead.display_name }}</a></span>
+      </div>
+      <div class="detail-meta-item">
+        <span class="detail-meta-label">Team size</span>
+        <span class="detail-meta-val">{{ project.filled_count }} / {{ project.team_size }} filled</span>
+      </div>
+      <div class="detail-meta-item">
+        <span class="detail-meta-label">Skills</span>
+        <span class="detail-meta-val">
+          {% for t in project.tag_list %}<span class="tag-mono">{{ t }}</span>{% endfor %}
+        </span>
+      </div>
+    </div>
+
+    <div class="detail-section-title">Current Roster</div>
+    <div class="roster-row">
+      <div class="req-avatar-circle" style="background:{{ project.lead.avatar_color }};">{{ project.lead.initials }}</div>
+      <div>
+        <div class="proj-title-text">{{ project.lead.display_name }}</div>
+        <div class="proj-sub-text">Project Lead</div>
+      </div>
+    </div>
+    {% for m in project.members %}
+    <div class="roster-row">
+      <div class="req-avatar-circle" style="background:{{ m.user.avatar_color }};">{{ m.user.initials }}</div>
+      <div>
+        <div class="proj-title-text">{{ m.user.display_name }}</div>
+        <div class="proj-sub-text">{{ m.role_label }}</div>
+      </div>
+    </div>
+    {% endfor %}
+
+    {% if project.open_roles %}
+    <div class="detail-section-title" style="margin-top:32px;">Open Roles</div>
+    {% for role in project.open_roles %}
+    <div class="role-row">
+      <span class="proj-title-text" style="font-size:13px;">{{ role.title }}</span>
+      <span class="badge badge-open">OPEN</span>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    {% if user_is_lead %}
+    <div class="detail-section-title" style="margin-top:32px;">Manage</div>
+    <p style="font-size:13px; color:var(--text-sec);">You lead this project. Review join requests from your <a href="{{ url_for('inbox') }}">inbox</a>.</p>
+
+    {% elif user_is_member %}
+    <div class="empty-state" style="margin-top:32px; padding:24px;">
+      <p>You're already on this team!</p>
+    </div>
+
+    {% elif pending_request %}
+    <div class="empty-state" style="margin-top:32px; padding:24px;">
+      <p>Your sync request is pending review from the project lead.</p>
+    </div>
+
+    {% else %}
+    <div class="detail-section-title" style="margin-top:32px;">Send a Sync Request</div>
+    <form method="post" action="{{ url_for('apply_to_project', project_id=project.id) }}">
+      {% if project.open_roles %}
+      <div class="form-group">
+        <label class="form-label">Role you're applying for</label>
+        <select class="form-select" name="role_id">
+          <option value="">No preference</option>
+          {% for role in project.open_roles %}
+          <option value="{{ role.id }}">{{ role.title }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      {% endif %}
+      <div class="form-group">
+        <label class="form-label">Message to the lead</label>
+        <textarea class="form-textarea" name="message" placeholder="Tell them why you'd be a good fit..."></textarea>
+      </div>
+      <button class="btn btn-primary btn-block" type="submit">Send Request</button>
+    </form>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

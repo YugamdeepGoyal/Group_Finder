@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Sign up{% endblock %}
+{% block content %}
+<div class="auth-container">
+  <div class="auth-card">
+    <h1 class="auth-title">Create your builder card</h1>
+    <p class="auth-sub">Takes about a minute. You can fill in skills and bio after.</p>
+
+    <form method="POST">
+      <div class="form-group">
+        <label class="form-label" for="username">Username</label>
+        <input class="form-input" type="text" id="username" name="username" value="{{ form.username or '' }}" required autofocus>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="email">Email</label>
+        <input class="form-input" type="email" id="email" name="email" value="{{ form.email or '' }}" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="full_name">Full name</label>
+        <input class="form-input" type="text" id="full_name" name="full_name" value="{{ form.full_name or '' }}">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="password">Password</label>
+          <input class="form-input" type="password" id="password" name="password" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="confirm_password">Confirm password</label>
+          <input class="form-input" type="password" id="confirm_password" name="confirm_password" required>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block btn-lg">Create account →</button>
+    </form>
+
+    <p class="auth-footer">Already have a card? <a href="{{ url_for('login') }}">Log in</a></p>
+  </div>
+</div>
+{% endblock %}

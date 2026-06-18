@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Forgemate{% endblock %}
+{% block content %}
+<div class="hero-container">
+  <div class="hero-left">
+    <div class="hero-label">HACKATHON TEAM MATCHING</div>
+    <h1 class="hero">
+      Build software<br>
+      <em>that ships.</em>
+    </h1>
+    <p class="hero-sub">
+      Forgemate is a high-density builders registry. Match with engineers, designers, and domain
+      leads without the boilerplate noise.
+    </p>
+    <div class="hero-ctas">
+      {% if current_user.is_authenticated %}
+      <a class="btn btn-primary btn-lg" href="{{ url_for('directory') }}">Explore Directory →</a>
+      <a class="btn btn-secondary btn-lg" href="{{ url_for('my_profile') }}">View Builder Card</a>
+      {% else %}
+      <a class="btn btn-primary btn-lg" href="{{ url_for('register') }}">Create Builder Card →</a>
+      <a class="btn btn-secondary btn-lg" href="{{ url_for('login') }}">Log in</a>
+      {% endif %}
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-stat">
+      <div class="hero-stat-num">{{ stats.projects }}</div>
+      <div class="hero-stat-label">Active Project Vaults</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">{{ stats.builders }}</div>
+      <div class="hero-stat-label">Builders Verified</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">{{ stats.open }}</div>
+      <div class="hero-stat-label">Vaults With Open Spots</div>
+    </div>
+  </div>
+</div>
+
+<div class="section-container">
+  <div class="section-header">
+    <div class="section-title"><h2>Three Steps to Scaffolding</h2></div>
+    <div class="section-desc">
+      <p>No chat loops. No generic profiles. Just direct, structured matching of project needs with builder stacks.</p>
+    </div>
+  </div>
+
+  <div class="steps-list">
+    <div class="step-row">
+      <div class="step-num">01 / Scaffolding</div>
+      <div class="step-title"><h3>Register Vault</h3></div>
+      <div class="step-body"><p>Define your project, list the stack it needs, and outline the open roles you're missing.</p></div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">02 / Telemetry</div>
+      <div class="step-title"><h3>Filter Registry</h3></div>
+      <div class="step-body"><p>Builders search the directory for projects matching exact stack experience and time constraints.</p></div>
+    </div>
+    <div class="step-row">
+      <div class="step-num">03 / Consensus</div>
+      <div class="step-title"><h3>Sync Teams</h3></div>
+      <div class="step-body"><p>Approve inbound requests, assign roles, and lock in your roster instantly.</p></div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block title %}Directory{% endblock %}
+
+{% block content %}
+<div class="dir-layout">
+
+  <aside class="dir-sidebar">
+    <form id="filter-form" method="get" action="{{ url_for('directory') }}">
+      <input type="hidden" name="status" value="{{ status_filter }}">
+
+      <div class="filter-section">
+        <div class="filter-label">Search</div>
+        <div class="search-container">
+          <input id="search-input" type="text" name="q" value="{{ q }}" placeholder="Search projects, tags...">
+        </div>
+      </div>
+
+      <div class="filter-section">
+        <div class="filter-label">Status</div>
+        <div class="filter-list">
+          {% set status_options = [('all','All vaults'), ('open','Open'), ('closing','Closing soon'), ('full','Full')] %}
+          {% for value, label in status_options %}
+          <button type="submit" name="status" value="{{ value }}"
+            class="filter-item {{ 'active' if status_filter == value }}"
+            style="border:none; width:100%; background:none; cursor:pointer; font-family:inherit;">
+            {% if value != 'all' %}<span class="filter-dot badge-{{ value }}" style="background:currentColor;"></span>{% endif %}
+            <span>{{ label }}</span>
+            <span class="filter-count">{{ status_counts.get(value, 0) }}</span>
+          </button>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="filter-section">
+        <div class="filter-label">Hackathon</div>
+        <div class="filter-list">
+          {% for ev in all_events %}
+          <label class="filter-checkbox-item">
+            <input type="checkbox" name="event" value="{{ ev }}" onchange="this.form.submit()" {{ 'checked' if ev in event_filters }}>
+            <span>{{ ev }}</span>
+          </label>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="filter-section">
+        <div class="filter-label">Skills</div>
+        <div class="filter-list">
+          {% for tag in all_tags %}
+          <label class="filter-checkbox-item">
+            <input type="checkbox" name="skill" value="{{ tag }}" onchange="this.form.submit()" {{ 'checked' if tag in skill_filters }}>
+            <span>{{ tag }}</span>
+          </label>
+          {% endfor %}
+        </div>
+      </div>
+
+      {% if q or event_filters or skill_filters or status_filter != 'all' %}
+      <a class="clear-filters" href="{{ url_for('directory') }}">Clear all filters</a>
+      {% endif %}
+    </form>
+  </aside>
+
+  <main class="dir-main">
+    <div class="dir-header">
+      <div class="dir-title">
+        <h1>Builders Directory</h1>
+        <p>Browse open vaults and find your next team.</p>
+      </div>
+      <a class="btn btn-primary" href="{{ url_for('new_project') }}">+ Post Project</a>
+    </div>
+
+    <div class="results-bar">
+      <span class="filter-count">{{ projects|length }} project{{ '' if projects|length == 1 else 's' }}</span>
+    </div>
+
+    {% if projects %}
+    <div class="table-wrapper">
+      <table class="directory-table">
+        <thead>
+          <tr>
+            <th>Project</th>
+            <th>Hackathon</th>
+            <th>Lead</th>
+            <th>Spots</th>
+            <th>Skills</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in projects %}
+          <tr class="directory-row" onclick="window.location='{{ url_for('project_detail', project_id=p.id) }}'">
+            <td>
+              <div class="proj-info-cell">
+                <div class="proj-icon-box">{{ p.icon_emoji }}</div>
+                <div>
+                  <div class="proj-title-text">{{ p.title }}</div>
+                  <div class="proj-sub-text">{{ p.description[:60] }}{{ '…' if p.description|length > 60 }}</div>
+                </div>
+              </div>
+            </td>
+            <td>{{ p.event }}</td>
+            <td>{{ p.lead.display_name }}</td>
+            <td class="spots-cell"><span>{{ p.spots_open }}</span> / {{ p.team_size }}</td>
+            <td>
+              {% for t in p.tag_list[:3] %}<span class="tag-mono">{{ t }}</span>{% endfor %}
+            </td>
+            <td><span class="badge badge-{{ p.status }}">{{ p.status_label }}</span></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <div class="empty-state-icon">🔍</div>
+      <p>No projects match those filters.</p>
+    </div>
+    {% endif %}
+  </main>
+</div>
+{% endblock %}
