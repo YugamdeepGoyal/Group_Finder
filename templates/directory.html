@@ -18,7 +18,7 @@
       <div class="filter-section">
         <div class="filter-label">Status</div>
         <div class="filter-list">
-          {% set status_options = [('all','All vaults'), ('open','Open'), ('closing','Closing soon'), ('full','Full')] %}
+          {% set status_options = [('all','All vaults'), ('open','Open'), ('closing','Closing soon'), ('full','Closed')] %}
           {% for value, label in status_options %}
           <button type="submit" name="status" value="{{ value }}"
             class="filter-item {{ 'active' if status_filter == value }}"

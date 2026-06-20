@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}My Requests{% endblock %}
+
+{% block content %}
+<div class="req-container">
+  <div class="req-page-header">
+    <div>
+      <h1 class="req-page-title">My Requests</h1>
+      <p class="req-page-sub">Track all the join requests you've sent to projects.</p>
+    </div>
+    {% if requests %}
+    <div class="req-count-badge">{{ requests|length }} total</div>
+    {% endif %}
+  </div>
+
+  {% if requests %}
+
+  {# Group by status #}
+  {% set pending_reqs  = requests | selectattr("status", "equalto", "pending")  | list %}
+  {% set accepted_reqs = requests | selectattr("status", "equalto", "accepted") | list %}
+  {% set declined_reqs = requests | selectattr("status", "equalto", "declined") | list %}
+
+  {# ── PENDING ── #}
+  {% if pending_reqs %}
+  <div class="mreq-section-title">
+    <span class="mreq-dot mreq-dot-pending"></span> Pending
+    <span class="mreq-section-count">{{ pending_reqs|length }}</span>
+  </div>
+  <div class="req-list" style="margin-bottom:32px;">
+    {% for jr in pending_reqs %}
+    {% include "partials/request_card.html" %}
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {# ── ACCEPTED ── #}
+  {% if accepted_reqs %}
+  <div class="mreq-section-title">
+    <span class="mreq-dot mreq-dot-accepted"></span> Accepted
+    <span class="mreq-section-count">{{ accepted_reqs|length }}</span>
+  </div>
+  <div class="req-list" style="margin-bottom:32px;">
+    {% for jr in accepted_reqs %}
+    {% include "partials/request_card.html" %}
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {# ── DECLINED ── #}
+  {% if declined_reqs %}
+  <div class="mreq-section-title">
+    <span class="mreq-dot mreq-dot-declined"></span> Declined
+    <span class="mreq-section-count">{{ declined_reqs|length }}</span>
+  </div>
+  <div class="req-list">
+    {% for jr in declined_reqs %}
+    {% include "partials/request_card.html" %}
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  {% else %}
+  <div class="req-empty">
+    <div class="req-empty-icon">📤</div>
+    <h3 class="req-empty-title">No requests yet</h3>
+    <p class="req-empty-sub">Browse the directory and send a join request to a project you like.</p>
+    <a class="btn btn-primary" href="{{ url_for('directory') }}" style="margin-top:20px; display:inline-flex;">Browse Projects →</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

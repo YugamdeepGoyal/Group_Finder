@@ -25,6 +25,7 @@
       <span class="nav-badge">{{ current_user.pending_inbox_count }}</span>
       {% endif %}
     </a>
+    <a class="nav-link {{ 'active' if active_page=='my_requests' }}" href="{{ url_for('my_requests') }}">My Requests</a>
   </div>
   <div class="nav-actions">
     <a class="btn btn-primary btn-sm" href="{{ url_for('new_project') }}">+ Post Project</a>

@@ -66,8 +66,25 @@
     {% endif %}
 
     {% if user_is_lead %}
-    <div class="detail-section-title" style="margin-top:32px;">Manage</div>
-    <p style="font-size:13px; color:var(--text-sec);">You lead this project. Review join requests from your <a href="{{ url_for('inbox') }}">inbox</a>.</p>
+    <div class="detail-section-title" style="margin-top:32px;">Manage Project</div>
+    <div class="manage-panel">
+      <div class="manage-row">
+        <div>
+          <div class="manage-label">Set Status</div>
+          <div class="manage-sub">Override the auto-computed status shown in the directory.</div>
+        </div>
+        <form method="post" action="{{ url_for('set_project_status', project_id=project.id) }}" style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+          <select class="form-select" name="status" style="width:auto; padding:8px 12px;">
+            <option value="auto" {% if not project.manual_status %}selected{% endif %}>Auto (roles-based)</option>
+            <option value="open"    {% if project.manual_status == 'open'    %}selected{% endif %}>Open</option>
+            <option value="closing" {% if project.manual_status == 'closing' %}selected{% endif %}>Closing Soon</option>
+            <option value="full"    {% if project.manual_status == 'full'    %}selected{% endif %}>Full</option>
+          </select>
+          <button class="btn btn-secondary btn-sm" type="submit">Update</button>
+        </form>
+      </div>
+      <p style="font-size:13px; color:var(--text-sec); margin-top:8px;">Review join requests in your <a href="{{ url_for('inbox') }}" style="color:var(--accent);">inbox →</a></p>
+    </div>
 
     {% elif user_is_member %}
     <div class="empty-state" style="margin-top:32px; padding:24px;">

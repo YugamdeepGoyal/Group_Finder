@@ -1,0 +1,29 @@
+<div class="req-card mreq-card-{{ jr.status }}">
+  <div class="req-card-left">
+    <div class="req-avatar-circle" style="background:{{ jr.project.lead.avatar_color }};">
+      {{ jr.project.lead.initials }}
+    </div>
+  </div>
+  <div class="req-card-body">
+    <div class="req-card-top">
+      <div>
+        <a class="req-applicant-name" href="{{ url_for('project_detail', project_id=jr.project.id) }}">{{ jr.project.title }}</a>
+        <span class="req-wants-text">led by</span>
+        <a class="req-project-link" href="{{ url_for('view_profile', username=jr.project.lead.username) }}">{{ jr.project.lead.display_name }}</a>
+        {% if jr.role %}<span class="req-role-chip">{{ jr.role.title }}</span>{% endif %}
+      </div>
+      <span class="mreq-status-chip mreq-chip-{{ jr.status }}">
+        {% if jr.status == 'pending' %}⏳ Pending
+        {% elif jr.status == 'accepted' %}✓ Accepted
+        {% else %}✕ Declined
+        {% endif %}
+      </span>
+    </div>
+    {% if jr.message %}
+    <div class="req-message-bubble">"{{ jr.message }}"</div>
+    {% endif %}
+    <div class="mreq-meta">
+      Sent {{ jr.created_at.strftime('%b %d, %Y') }}
+    </div>
+  </div>
+</div>

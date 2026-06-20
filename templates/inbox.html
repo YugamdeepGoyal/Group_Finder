@@ -3,41 +3,74 @@
 
 {% block content %}
 <div class="req-container">
-  <div class="dir-title">
-    <h1>Sync Requests</h1>
-    <p>Pending requests to join projects you lead.</p>
+  <div class="req-page-header">
+    <div>
+      <h1 class="req-page-title">Join Requests</h1>
+      <p class="req-page-sub">Review and manage requests to join your projects.</p>
+    </div>
+    {% if requests %}
+    <div class="req-count-badge">{{ requests|length }} pending</div>
+    {% endif %}
   </div>
 
   {% if requests %}
-  <div class="req-list">
-    {% for jr in requests %}
-    <div class="req-row">
-      <div class="req-avatar-circle" style="background:{{ jr.applicant.avatar_color }};">{{ jr.applicant.initials }}</div>
-      <div class="req-body-content" style="flex:1;">
-        <h4>
-          <a href="{{ url_for('view_profile', username=jr.applicant.username) }}">{{ jr.applicant.display_name }}</a>
-          <span class="proj-sub-text">wants to join</span>
-          <a href="{{ url_for('project_detail', project_id=jr.project.id) }}">{{ jr.project.title }}</a>
-          {% if jr.role %}<span class="tag-mono">{{ jr.role.title }}</span>{% endif %}
-        </h4>
-        {% if jr.message %}<p class="req-message-text">"{{ jr.message }}"</p>{% endif %}
+  <div class="req-tabs">
+    <button class="req-tab active" onclick="filterRequests('all', this)">All <span class="req-tab-count">{{ requests|length }}</span></button>
+    <button class="req-tab" onclick="filterRequests('pending', this)">Pending</button>
+  </div>
 
-        <div class="req-actions-panel" style="flex-direction:row;">
-          <form method="post" action="{{ url_for('accept_request', request_id=jr.id) }}" style="display:flex; gap:8px; align-items:center;">
-            <input class="form-input" type="text" name="role_label" placeholder="{{ jr.role.title if jr.role else 'Contributor' }}" style="width:160px; padding:8px 10px;">
-            <button class="btn btn-primary btn-sm" type="submit">Accept</button>
+  <div class="req-list" id="req-list">
+    {% for jr in requests %}
+    <div class="req-card" data-status="pending">
+      <div class="req-card-left">
+        <div class="req-avatar-circle" style="background:{{ jr.applicant.avatar_color }};">{{ jr.applicant.initials }}</div>
+      </div>
+      <div class="req-card-body">
+        <div class="req-card-top">
+          <div>
+            <a class="req-applicant-name" href="{{ url_for('view_profile', username=jr.applicant.username) }}">{{ jr.applicant.display_name }}</a>
+            <span class="req-wants-text">wants to join</span>
+            <a class="req-project-link" href="{{ url_for('project_detail', project_id=jr.project.id) }}">{{ jr.project.title }}</a>
+            {% if jr.role %}
+            <span class="req-role-chip">{{ jr.role.title }}</span>
+            {% endif %}
+          </div>
+          <div class="req-time-text">{{ jr.created_at.strftime('%b %d') }}</div>
+        </div>
+
+        {% if jr.message %}
+        <div class="req-message-bubble">
+          <span class="req-quote-mark">"</span>{{ jr.message }}<span class="req-quote-mark">"</span>
+        </div>
+        {% endif %}
+
+        <div class="req-card-actions">
+          <form method="post" action="{{ url_for('accept_request', request_id=jr.id) }}" class="req-accept-form">
+            <input class="req-role-input form-input" type="text" name="role_label"
+              placeholder="{{ jr.role.title if jr.role else 'Role / Contributor' }}"
+              title="Label for this person's role (editable)">
+            <button class="btn btn-accept" type="submit">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              Accept
+            </button>
           </form>
           <form method="post" action="{{ url_for('decline_request', request_id=jr.id) }}">
-            <button class="btn btn-ghost btn-sm" type="submit">Decline</button>
+            <button class="btn btn-decline" type="submit">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              Decline
+            </button>
           </form>
         </div>
       </div>
     </div>
     {% endfor %}
   </div>
+
   {% else %}
-  <div class="empty-state" style="margin-top:24px;">
-    <p>No pending requests right now.</p>
+  <div class="req-empty">
+    <div class="req-empty-icon">📭</div>
+    <h3 class="req-empty-title">All caught up!</h3>
+    <p class="req-empty-sub">No pending requests right now. When someone applies to your projects, they'll appear here.</p>
   </div>
   {% endif %}
 </div>
