@@ -61,3 +61,7 @@ venv.bak/
 *.swp
 *.swo
 .DS_Store
+
+
+
+# WindowsThumbs.dbehthumbs.dbDesktop.ini# macOS.DS_Store.AppleDouble.LSOverrideIcon?._*# IDEs & Editors.vscode/.idea/.spyproject/
