@@ -109,18 +109,17 @@ class Project(db.Model):
         # If lead manually set a status, respect it
         if self.manual_status in ("open", "closing", "full"):
             return self.manual_status
-        # Auto-derive from roles
-        if self.roles.count() == 0:
-            return "open"
-        if self.spots_open == 0:
+        # Auto-derive: compare filled seats to total team size
+        remaining = self.team_size - self.filled_count
+        if remaining <= 0:
             return "full"
-        if self.spots_open == 1:
+        if remaining == 1:
             return "closing"
         return "open"
 
     @property
     def status_label(self):
-        return self.status.upper()
+        return {"open": "OPEN", "closing": "CLOSING", "full": "CLOSED"}.get(self.status, self.status.upper())
 
     @property
     def team_size(self):

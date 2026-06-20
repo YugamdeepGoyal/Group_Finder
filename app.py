@@ -18,9 +18,6 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = "dev-secret-key-change-this-before-deploying"
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(basedir, "forgemate.db")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-# Security: sessions expire when the browser is closed (no persistent cookie)
-app.config["SESSION_PERMANENT"] = False
-app.config["REMEMBER_COOKIE_DURATION"] = 0
 
 db.init_app(app)
 
@@ -45,6 +42,7 @@ def inject_active_page():
         "directory": "directory", "project_detail": "directory", "new_project": "directory",
         "my_profile": "profile", "view_profile": "profile", "edit_profile": "profile",
         "inbox": "inbox",
+        "my_requests": "my_requests",
     }
     return {"active_page": section_map.get(request.endpoint, "")}
 
@@ -98,7 +96,7 @@ def register():
         db.session.add(user)
         db.session.commit()
 
-        login_user(user, remember=False)  # session-only: cleared when browser closes
+        login_user(user)
         flash("Welcome to Forgemate — your builder card is live.", "success")
         return redirect(url_for("edit_profile"))
 
@@ -118,7 +116,7 @@ def login():
         ).first()
 
         if user and user.check_password(password):
-            login_user(user, remember=False)  # session-only: cleared when browser closes
+            login_user(user)
             flash(f"Welcome back, {user.display_name}.", "success")
             next_url = request.args.get("next")
             return redirect(next_url or url_for("directory"))
@@ -295,6 +293,18 @@ def inbox():
         .all()
     )
     return render_template("inbox.html", requests=pending)
+
+
+@app.route("/my-requests")
+@login_required
+def my_requests():
+    all_requests = (
+        JoinRequest.query
+        .filter_by(applicant_id=current_user.id)
+        .order_by(JoinRequest.created_at.desc())
+        .all()
+    )
+    return render_template("my_requests.html", requests=all_requests)
 
 
 @app.route("/inbox/<int:request_id>/accept", methods=["POST"])
