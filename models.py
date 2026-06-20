@@ -81,6 +81,7 @@ class Project(db.Model):
     lead_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     manual_status = db.Column(db.String(20), default="")  # "", "open", "closing", "full"
+    max_members = db.Column(db.Integer, default=None)     # total team size cap (includes lead)
 
     roles = db.relationship(
         "ProjectRole", backref="project", cascade="all, delete-orphan", lazy="dynamic"
@@ -102,6 +103,11 @@ class Project(db.Model):
 
     @property
     def spots_open(self):
+        """How many seats are still available."""
+        current = self.members.count() + 1  # +1 for lead
+        if self.max_members is not None:
+            return max(0, self.max_members - current)
+        # Fallback: count unfilled roles when no cap is set
         return len(self.open_roles)
 
     @property
@@ -109,8 +115,8 @@ class Project(db.Model):
         # If lead manually set a status, respect it
         if self.manual_status in ("open", "closing", "full"):
             return self.manual_status
-        # Auto-derive: compare filled seats to total team size
-        remaining = self.team_size - self.filled_count
+        # Auto-derive from spots remaining
+        remaining = self.spots_open
         if remaining <= 0:
             return "full"
         if remaining == 1:
@@ -123,11 +129,14 @@ class Project(db.Model):
 
     @property
     def team_size(self):
-        # current roster (members + lead) plus however many open seats remain
-        return self.members.count() + 1 + self.spots_open
+        """Fixed total cap. Falls back to role count + lead."""
+        if self.max_members is not None:
+            return self.max_members
+        return 1 + self.roles.count()  # lead + every role slot (filled or not)
 
     @property
     def filled_count(self):
+        """How many seats are taken (members + lead)."""
         return self.members.count() + 1
 
     def pending_request_for(self, user_id):

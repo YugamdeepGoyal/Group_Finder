@@ -27,7 +27,7 @@
       </div>
       <div class="detail-meta-item">
         <span class="detail-meta-label">Team size</span>
-        <span class="detail-meta-val">{{ project.filled_count }} / {{ project.team_size }} filled</span>
+        <span class="detail-meta-val">{{ project.filled_count }} / {{ project.team_size }} &nbsp;<span style="color:var(--text-sec); font-weight:400;">({{ project.spots_open }} spot{{ "" if project.spots_open == 1 else "s" }} open)</span></span>
       </div>
       <div class="detail-meta-item">
         <span class="detail-meta-label">Skills</span>

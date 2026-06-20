@@ -217,6 +217,8 @@ def new_project():
         icon_emoji = request.form.get("icon_emoji", "").strip() or "🔗"
         roles_raw = request.form.get("roles", "")
         role_titles = [r.strip() for r in roles_raw.splitlines() if r.strip()]
+        max_members_raw = request.form.get("max_members", "").strip()
+        max_members = int(max_members_raw) if max_members_raw.isdigit() and int(max_members_raw) > 1 else None
 
         if not title:
             flash("Give your project a title.", "error")
@@ -225,6 +227,7 @@ def new_project():
         project = Project(
             title=title, description=description, event=event,
             tags=tags, icon_emoji=icon_emoji, lead_id=current_user.id,
+            max_members=max_members,
         )
         db.session.add(project)
         db.session.flush()
@@ -420,6 +423,9 @@ with app.app_context():
         cols = [row[1] for row in conn.execute(text("PRAGMA table_info(project)"))]
         if "manual_status" not in cols:
             conn.execute(text("ALTER TABLE project ADD COLUMN manual_status VARCHAR(20) DEFAULT ''"))
+            conn.commit()
+        if "max_members" not in cols:
+            conn.execute(text("ALTER TABLE project ADD COLUMN max_members INTEGER DEFAULT NULL"))
             conn.commit()
     seed_demo_data()
 

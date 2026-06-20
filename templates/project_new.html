@@ -38,10 +38,40 @@
       </div>
 
       <div class="form-group">
-        <label class="form-label">Open roles</label>
-        <textarea class="form-textarea" name="roles" placeholder="One role per line, e.g.&#10;Frontend Developer&#10;Smart Contract Engineer">{{ form.get('roles','') }}</textarea>
-        <div class="form-hint">One role title per line. Leave blank if you don't need to list specific roles.</div>
+        <label class="form-label">Team size needed</label>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="display:flex; gap:0; border:1px solid var(--border); border-radius:8px; overflow:hidden; background:var(--surface);">
+            <button type="button" onclick="adjustTeamSize(-1)" style="width:40px; height:40px; border:none; background:none; cursor:pointer; font-size:18px; color:var(--text-sec); display:flex; align-items:center; justify-content:center;">−</button>
+            <input id="max_members_input" type="number" name="max_members" min="2" max="50"
+              value="{{ form.get('max_members','') }}"
+              placeholder="—"
+              style="width:60px; height:40px; border:none; border-left:1px solid var(--border); border-right:1px solid var(--border); text-align:center; font-size:16px; font-weight:600; background:transparent; color:var(--text-pri); -moz-appearance:textfield;"
+              oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+            <button type="button" onclick="adjustTeamSize(1)" style="width:40px; height:40px; border:none; background:none; cursor:pointer; font-size:18px; color:var(--text-sec); display:flex; align-items:center; justify-content:center;">+</button>
+          </div>
+          <span style="font-size:13px; color:var(--text-sec);">people total (including you)</span>
+        </div>
+        <div class="form-hint" style="margin-top:8px;">Set the total team cap. This takes priority over role count below.</div>
       </div>
+
+      <div class="form-group">
+        <label class="form-label">Open roles <span style="font-size:12px; color:var(--text-sec); font-weight:400;">(optional — refines who you're looking for)</span></label>
+        <textarea class="form-textarea" name="roles" placeholder="One role per line, e.g.&#10;Frontend Developer&#10;Smart Contract Engineer">{{ form.get('roles','') }}</textarea>
+        <div class="form-hint">One role title per line. These are visible to applicants for picking when they apply.</div>
+      </div>
+
+<script>
+function adjustTeamSize(delta) {
+  const inp = document.getElementById('max_members_input');
+  const cur = parseInt(inp.value) || 0;
+  const next = Math.max(2, Math.min(50, cur + delta));
+  inp.value = next;
+}
+document.getElementById('max_members_input').addEventListener('keydown', function(e) {
+  if (e.key === 'ArrowUp') { adjustTeamSize(1); e.preventDefault(); }
+  if (e.key === 'ArrowDown') { adjustTeamSize(-1); e.preventDefault(); }
+});
+</script>
 
       <button class="btn btn-primary btn-block" type="submit">Register Project</button>
     </form>

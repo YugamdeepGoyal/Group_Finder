@@ -82,7 +82,7 @@
             <th>Project</th>
             <th>Hackathon</th>
             <th>Lead</th>
-            <th>Spots</th>
+            <th>Members</th>
             <th>Skills</th>
             <th>Status</th>
           </tr>
@@ -101,7 +101,7 @@
             </td>
             <td>{{ p.event }}</td>
             <td>{{ p.lead.display_name }}</td>
-            <td class="spots-cell"><span>{{ p.spots_open }}</span> / {{ p.team_size }}</td>
+            <td class="spots-cell"><span>{{ p.filled_count }}</span> / {{ p.team_size }}</td>
             <td>
               {% for t in p.tag_list[:3] %}<span class="tag-mono">{{ t }}</span>{% endfor %}
             </td>
