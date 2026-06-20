@@ -80,6 +80,7 @@ class Project(db.Model):
     icon_emoji = db.Column(db.String(10), default="🔗")
     lead_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    manual_status = db.Column(db.String(20), default="")  # "", "open", "closing", "full"
 
     roles = db.relationship(
         "ProjectRole", backref="project", cascade="all, delete-orphan", lazy="dynamic"
@@ -105,6 +106,10 @@ class Project(db.Model):
 
     @property
     def status(self):
+        # If lead manually set a status, respect it
+        if self.manual_status in ("open", "closing", "full"):
+            return self.manual_status
+        # Auto-derive from roles
         if self.roles.count() == 0:
             return "open"
         if self.spots_open == 0:

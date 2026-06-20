@@ -18,6 +18,9 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = "dev-secret-key-change-this-before-deploying"
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(basedir, "forgemate.db")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+# Security: sessions expire when the browser is closed (no persistent cookie)
+app.config["SESSION_PERMANENT"] = False
+app.config["REMEMBER_COOKIE_DURATION"] = 0
 
 db.init_app(app)
 
@@ -95,7 +98,7 @@ def register():
         db.session.add(user)
         db.session.commit()
 
-        login_user(user)
+        login_user(user, remember=False)  # session-only: cleared when browser closes
         flash("Welcome to Forgemate — your builder card is live.", "success")
         return redirect(url_for("edit_profile"))
 
@@ -115,7 +118,7 @@ def login():
         ).first()
 
         if user and user.check_password(password):
-            login_user(user)
+            login_user(user, remember=False)  # session-only: cleared when browser closes
             flash(f"Welcome back, {user.display_name}.", "success")
             next_url = request.args.get("next")
             return redirect(next_url or url_for("directory"))
@@ -263,6 +266,20 @@ def apply_to_project(project_id):
     return redirect(url_for("project_detail", project_id=project.id))
 
 
+@app.route("/project/<int:project_id>/set-status", methods=["POST"])
+@login_required
+def set_project_status(project_id):
+    project = Project.query.get_or_404(project_id)
+    if project.lead_id != current_user.id:
+        abort(403)
+    new_status = request.form.get("status", "")
+    if new_status in ("open", "closing", "full", "auto"):
+        project.manual_status = "" if new_status == "auto" else new_status
+        db.session.commit()
+        flash(f"Project status updated to {project.status.upper()}.", "success")
+    return redirect(url_for("project_detail", project_id=project.id))
+
+
 # ───────────────────────── INBOX ─────────────────────────
 
 @app.route("/inbox")
@@ -387,6 +404,13 @@ def delete_skill(skill_id):
 
 with app.app_context():
     db.create_all()
+    # Migrate: add manual_status column if the DB existed before this change
+    from sqlalchemy import text
+    with db.engine.connect() as conn:
+        cols = [row[1] for row in conn.execute(text("PRAGMA table_info(project)"))]
+        if "manual_status" not in cols:
+            conn.execute(text("ALTER TABLE project ADD COLUMN manual_status VARCHAR(20) DEFAULT ''"))
+            conn.commit()
     seed_demo_data()
 
 
